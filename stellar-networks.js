@@ -1,21 +1,24 @@
 function stellarNetworks () {
-  return {
-    futurenet: {
+  return [
+    {
+      id: 'futurenet',
       name: 'CUSTOM',
       passphrase: 'Test SDF Future Network ; October 2022',
       url: 'https://horizon-futurenet.stellar.org',
     },
-    public: {
+    {
+      id: 'public',
       name: 'PUBLIC',
       passphrase: 'Public Global Stellar Network ; September 2015',
       url: 'https://horizon.stellar.org',
     },
-    test: {
+    {
+      id: 'test',
       name: 'TESTNET',
       passphrase: 'Test SDF Network ; September 2015',
       url: 'https://horizon-testnet.stellar.org',
     },
-  };
+  ];
 }
 
 export { stellarNetworks, }

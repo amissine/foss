@@ -18,6 +18,10 @@ function stellarNetworks () {
     },
     {
       id: 'test',
+      hex: {
+        agent: 'GB4Q6UNLMNGQCHC3NKU2OZJBUP7KMELMUDKWNQRG2RA72GSPPBL7USVU',
+        issuer: 'GBVH4OS7KLLY5KTHSO35NB2OUX56Y5QJUSB3BLC47Z6DNLZ4WFOEQA2R',
+      },
       name: 'TESTNET',
       passphrase: 'Test SDF Network ; September 2015',
       url: 'https://horizon-testnet.stellar.org',

@@ -1,12 +1,12 @@
-function stellarNetworks () {
+function stellarNetworks () { // {{{1
   return [
-    {
-      id: 'futurenet',
+    { // custom {{{2
+      id: 'custom',
       name: 'CUSTOM',
       passphrase: 'Test SDF Future Network ; October 2022',
       url: 'https://horizon-futurenet.stellar.org',
     },
-    {
+    { // public {{{2
       id: 'public',
       hex: {
         agent: 'GCKD37IZDNMZN5ZAYDCJPSJNESQEE7UDPM6C4QU7LPIHFZVN4WPBO2EN',
@@ -16,7 +16,7 @@ function stellarNetworks () {
       passphrase: 'Public Global Stellar Network ; September 2015',
       url: 'https://horizon.stellar.org',
     },
-    {
+    { // test {{{2
       id: 'test',
       hex: {
         agent: 'GB4Q6UNLMNGQCHC3NKU2OZJBUP7KMELMUDKWNQRG2RA72GSPPBL7USVU',
@@ -25,8 +25,9 @@ function stellarNetworks () {
       name: 'TESTNET',
       passphrase: 'Test SDF Network ; September 2015',
       url: 'https://horizon-testnet.stellar.org',
-    },
+    }, // }}}2
   ];
 }
 
-export { stellarNetworks, }
+export { stellarNetworks, } // {{{1
+

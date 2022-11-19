@@ -1,5 +1,4 @@
 class Account { // {{{1
-
   #opts ( // {{{2
     memo,
     fee = this.sdk.BASE_FEE,
@@ -25,13 +24,41 @@ class Account { // {{{1
   }
 
   constructor (opts = null) { // {{{2
-    Object.assign(this, opts, { sdk: window.StellarSdk })
+    this.network = window.StellarNetwork
+    this.sdk = window.StellarSdk
+    this.server = new this.sdk.Server(this.network.url)
+    Object.assign(this, opts)
+  }
+
+  create (destination, startingBalance) { // {{{2
+    this.#tx().addOperation(this.sdk.Operation.createAccount({
+      destination, startingBalance
+    }))
+    return this;
   }
 
   fromXDR (xdr) { // {{{2
     return this.sdk.TransactionBuilder.fromXDR(
       xdr, this.sdk.Networks[this.network.name]
     );
+  }
+
+  async load () { // {{{2
+    if (this.loaded) {
+      return this;
+    }
+    this.loaded = await this.server.loadAccount(this.keypair.publicKey())
+    .catch(e => {
+      console.error('- Account.load() failed:', e, this, process.argv, process.env)
+      throw new Error('Account.load() failed')
+    })
+
+    return this;
+  }
+
+  setOpts (opts) { // {{{2
+    this.#tx().addOperation(this.sdk.Operation.setOptions(opts))
+    return this;
   }
 
   sign (wallet = null) { // {{{2
@@ -90,6 +117,14 @@ class Account { // {{{1
   // }}}2
 }
 
+class User extends Account { // {{{1
+  constructor (opts) { // {{{2
+    super(opts)
+  }
+
+  // }}}2
+}
+
 function now (deltaMs) { // {{{1
   return BigInt.asUintN(
     64, 
@@ -98,5 +133,5 @@ function now (deltaMs) { // {{{1
 }
 
 export { // {{{1
-  Account,
+  Account, User,
 }

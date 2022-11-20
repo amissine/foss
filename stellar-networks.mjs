@@ -1,6 +1,4 @@
 function stellarNetworks () { // {{{1
-  console.log('sdk', window.StellarSdk)
-
   let networks = [
     { // custom {{{2
       id: 'custom',

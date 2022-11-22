@@ -30,10 +30,24 @@ class Account { // {{{1
     Object.assign(this, opts)
   }
 
+  begin (sponsoredId) { // {{{2
+    this.#tx().addOperation(
+      this.sdk.Operation.beginSponsoringFutureReserves({ sponsoredId })
+    )
+    return this;
+  }
+
   create (destination, startingBalance) { // {{{2
     this.#tx().addOperation(this.sdk.Operation.createAccount({
       destination, startingBalance
     }))
+    return this;
+  }
+
+  end (source) { // {{{2
+    this.#tx().addOperation(
+      this.sdk.Operation.endSponsoringFutureReserves({ source })
+    )
     return this;
   }
 
@@ -53,6 +67,19 @@ class Account { // {{{1
       throw new Error('Account.load() failed')
     })
 
+    return this;
+  }
+
+  pay ( // {{{2
+    asset,
+    amount, 
+    source = null,
+    destination = this.network.hex.agent
+  ) { 
+    this.#tx().addOperation(
+      source ? this.sdk.Operation.payment({ destination, asset, amount, source })
+      : this.sdk.Operation.payment({ destination, asset, amount })
+    )
     return this;
   }
 

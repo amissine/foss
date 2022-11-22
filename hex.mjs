@@ -1,4 +1,4 @@
-const hexStartingBalance = '1000000000000'
+const hexStartingBalance = '1000000000'
 
 function hexAssets (hex) { // {{{1
   return [

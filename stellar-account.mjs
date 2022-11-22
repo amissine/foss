@@ -110,8 +110,18 @@ class Account { // {{{1
     return this;
   }
 
-  trusts (assets) { // {{{2
-    return this.loaded.balances.length > 1; // FIXME
+  trusts (hex) { // {{{2
+    let balances = this.loaded.balances
+    return balances.length > 2 &&
+      balances.find(
+        b => b.asset_type == 'credit_alphanum12' &&
+        b.asset_code == 'ClawableHexa' && b.is_clawback_enabled &&
+        b.asset_issuer == hex.issuerClawableHexa
+      ) &&
+      balances.find(
+        b => b.asset_type == 'credit_alphanum4' &&
+        b.asset_code == 'HEXA' && b.asset_issuer == hex.issuerHEXA
+      );
   }
 
   // }}}2

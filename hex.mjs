@@ -1,3 +1,5 @@
+const hexStartingBalance = '1000000000000'
+
 function hexAssets (hex) { // {{{1
   return [
     new window.StellarSdk.Asset('ClawableHexa', hex.issuerClawableHexa),
@@ -5,5 +7,5 @@ function hexAssets (hex) { // {{{1
   ];
 }
 
-export { hexAssets, } // {{{1
+export { hexAssets, hexStartingBalance, } // {{{1
 

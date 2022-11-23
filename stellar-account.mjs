@@ -154,9 +154,16 @@ class Account { // {{{1
   // }}}2
 }
 
-class User extends Account { // {{{1
+class User extends Account { // Stellar HEX User {{{1
   constructor (opts) { // {{{2
     super(opts)
+  }
+
+  async add () { // {{{2
+    let f = this.startingBalanceAsset ? this.#fundSelfPaidUser
+    : this.#updateSelfPaidUser
+
+    return await f.call(this);
   }
 
   // }}}2

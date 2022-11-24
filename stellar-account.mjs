@@ -159,11 +159,7 @@ class User extends Account { // Stellar HEX User {{{1
     super(opts)
   }
 
-  async add () { // {{{2
-    let f = this.startingBalanceAsset ? this.#fundSelfPaidUser
-    : this.#updateSelfPaidUser
-
-    return await f.call(this);
+  async add () { // trust and fund HEX assets, set user props {{{2
   }
 
   // }}}2

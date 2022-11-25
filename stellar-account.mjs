@@ -1,3 +1,5 @@
+import { hexAssets, } from './hex.mjs' // {{{1
+
 class Account { // {{{1
   #opts ( // {{{2
     memo,
@@ -83,6 +85,17 @@ class Account { // {{{1
     return this;
   }
 
+  put (k, v = null, source = null) { // manageData {{{2
+    if (v === undefined) {
+      return this;
+    }
+    this.#tx().addOperation(this.sdk.Operation.manageData(
+      source ? { name: k, value: v, source } 
+      : { name: k, value: v }
+    ))
+    return this;
+  }
+
   setOpts (opts) { // {{{2
     this.#tx().addOperation(this.sdk.Operation.setOptions(opts))
     return this;
@@ -159,7 +172,28 @@ class User extends Account { // Stellar HEX User {{{1
     super(opts)
   }
 
-  async add () { // trust and fund HEX assets, set user props {{{2
+  add () { // trust and fund HEX assets, set user props {{{2
+    let hex = this.network.hex
+    hexAssets(hex)
+
+    let amountH = this.startingBalanceH; delete this.startingBalanceH
+    let amountCH = this.startingBalanceCH; delete this.startingBalanceCH
+    return this.trust(hex.assets[0]).trust(hex.assets[1])
+    .begin(hex.agent)
+    .pay(hex.assets[0], amountCH, hex.agent, this.keypair.publicKey())
+    .pay(hex.assets[1], amountH, hex.agent, this.keypair.publicKey())
+    .end(hex.agent)
+    .setProps();
+  }
+ 
+  setProps (props = this) { // {{{2
+    for (let k of Object.getOwnPropertyNames(props)) {
+      if (typeof props[k] != 'string') {
+        continue;
+      }
+      this.put(k, props[k]).put(k)
+    }
+    return this;
   }
 
   // }}}2

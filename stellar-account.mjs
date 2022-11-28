@@ -65,7 +65,7 @@ class Account { // {{{1
     }
     this.loaded = await this.server.loadAccount(this.keypair.publicKey())
     .catch(e => {
-      console.error('- Account.load() failed:', e, this, process.argv, process.env)
+      console.error('- Account.load() failed:', e, this, process?.argv, process?.env)
       throw new Error('Account.load() failed')
     })
 

@@ -118,7 +118,7 @@ class Account { // {{{1
     if (opts?.keypairs) {
       t.sign(...opts.keypairs)
     } else {
-      this.keypair && t.sign(this.keypair)
+      this.keypair?.canSign() && t.sign(this.keypair)
     }
     return this.server.submitTransaction(t)
     .catch(e => console.error(

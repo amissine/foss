@@ -27,4 +27,30 @@ async function doGET ( // {{{1
   return result;
 }
 
-export { doGET, } // {{{1
+function pGET ( // {{{1
+  path = '', 
+  parms = '', 
+  secret = null, 
+  log = false, 
+  site = 'https://he-agent.didalik.workers.dev'
+) {
+  let keypair = secret ? window.StellarSdk.Keypair.fromSecret(secret)
+  : window.StellarSdk.Keypair.random()
+  let data = keypair.publicKey()
+  let signature = keypair.sign(data)
+  signature = signature.toString('base64')
+  let parmsTail = `sk=ASK_&network=${window.StellarNetwork.id}&${data}=${signature}`
+  parms = parms.length == 0 ? `?${parmsTail}` : parms + `&${parmsTail}`
+  log && console.log('doGET parms', parms)
+
+  return fetch(`${site}${path}${parms}`, { method: 'GET', })
+    .then(response => {
+      if (response.ok) {
+        return response.text();
+      }
+      console.error(data, parms)
+      throw new Error(response.status)
+    });
+}
+
+export { doGET, pGET, } // {{{1

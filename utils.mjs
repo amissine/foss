@@ -41,7 +41,7 @@ function pGET ( // {{{1
   signature = signature.toString('base64')
   let parmsTail = `sk=ASK_&network=${window.StellarNetwork.id}&${data}=${signature}`
   parms = parms.length == 0 ? `?${parmsTail}` : parms + `&${parmsTail}`
-  log && console.log('doGET parms', parms)
+  log && console.log('pGET parms', parms)
 
   return fetch(`${site}${path}${parms}`, { method: 'GET', })
     .then(response => {

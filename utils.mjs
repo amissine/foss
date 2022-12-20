@@ -44,12 +44,18 @@ function pGET ( // {{{1
   log && console.log('pGET parms', parms)
 
   return fetch(`${site}${path}${parms}`, { method: 'GET', })
-    .then(response => {
+    .then(async response => {
       if (response.ok) {
         return response.text();
       }
-      console.error(data, parms)
-      throw new Error(response.status)
+      let text
+      try {
+        text = await response.text()
+      } catch(e) {
+        console.error(e)
+        throw new Error(response.status)
+      }
+      console.error('-', response.status, text)
     });
 }
 

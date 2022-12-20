@@ -38,7 +38,7 @@ function pGET ( // {{{1
   : window.StellarSdk.Keypair.random()
   let data = keypair.publicKey()
   let signature = keypair.sign(data)
-  signature = signature.toString('base64')
+  signature = encodeURIComponent(signature.toString('base64'))
   let parmsTail = `sk=ASK_&network=${window.StellarNetwork.id}&${data}=${signature}`
   parms = parms.length == 0 ? `?${parmsTail}` : parms + `&${parmsTail}`
   log && console.log('pGET parms', parms)

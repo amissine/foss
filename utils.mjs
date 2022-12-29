@@ -1,9 +1,17 @@
+const CFW_URL_DEV = 'https://he-agent.didalik.workers.dev' // {{{1
+
+function delay (ms, result = 'OK') { // {{{1
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(result), ms)
+  });
+}
+
 async function doGET ( // {{{1
   path = '', 
   secret = null, 
   log = false, 
   parms = '', 
-  site = 'https://he-agent.didalik.workers.dev'
+  site = CFW_URL_DEV
 ) {
   let keypair = secret ? window.StellarSdk.Keypair.fromSecret(secret)
   : window.StellarSdk.Keypair.random()
@@ -32,7 +40,7 @@ function pGET ( // {{{1
   parms = '', 
   secret = null, 
   log = false, 
-  site = 'https://he-agent.didalik.workers.dev'
+  site = CFW_URL_DEV
 ) {
   let keypair = secret ? window.StellarSdk.Keypair.fromSecret(secret)
   : window.StellarSdk.Keypair.random()
@@ -59,4 +67,4 @@ function pGET ( // {{{1
     });
 }
 
-export { doGET, pGET, } // {{{1
+export { CFW_URL_DEV, delay, doGET, pGET, } // {{{1

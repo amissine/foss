@@ -28,7 +28,10 @@ class Account { // {{{1
   constructor (opts = null) { // {{{2
     this.network = window.StellarNetwork
     this.sdk = window.StellarSdk
-    this.server = new this.sdk.Server(this.network.url)
+    this.server = window.stellarHorizonServer ?? new this.sdk.Server(this.network.url)
+    if (!window.stellarHorizonServer) {
+      window.stellarHorizonServer = this.server // always a singleton
+    }
     Object.assign(this, opts)
   }
 
@@ -64,11 +67,15 @@ class Account { // {{{1
       return this;
     }
     this.loaded = await this.server.loadAccount(this.keypair.publicKey())
-    .catch(e => {
-      console.error('- Account.load() failed:', e, this, process?.argv, process?.env)
-      throw new Error('Account.load() failed')
-    })
+    .catch(e => { throw e; })
 
+    return this;
+  }
+
+  manageSellOffer (opts) { // {{{2
+    this.#tx().addOperation(this.sdk.Operation.manageSellOffer(
+      opts
+    ))
     return this;
   }
 

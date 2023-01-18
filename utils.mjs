@@ -67,4 +67,14 @@ function pGET ( // {{{1
     });
 }
 
-export { CFW_URL_DEV, delay, doGET, pGET, } // {{{1
+let timestamps = {} // function timestamp (label = 'default') {{{1
+function timestamp (label = 'default') {
+  let ts = Date.now()       // Usage:
+  if (!timestamps[label]) { //   timestamp('sink1')
+    timestamps[label] = ts  //   ...
+    return ts;              //   if (timestamp('sink1') < 3000) ...
+  }
+  return ts - timestamps[label];
+}
+
+export { CFW_URL_DEV, delay, doGET, pGET, timestamp, } // {{{1

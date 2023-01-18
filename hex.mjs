@@ -77,7 +77,7 @@ class Orderbook { // {{{1
     for (let e of b.bids) {
       r = ' ' + (+(hexaValue(e.amount / e.price))) + '@' + (+e.price) + r
     }
-    r += ' - '
+    r += ' : '
     for (let e of b.asks) {
       r += (+e.amount) + '@' + (+e.price) + ' '
     }
@@ -117,5 +117,44 @@ function hexAssets (hex) { // {{{1
   ];
 }
 
-export { Orderbook, hexAssets, hexStartingBalance, } // {{{1
+function offerCreated (xdr, kind = 'manageBuyOfferResult') { // {{{1
+  let result = window.StellarSdk.xdr.TransactionResult.fromXDR(xdr, "base64")
+    .result().results()
+
+  //console.dir({ resultLength: result.length }, { depth: 1 })
+
+  let index = result.length == 3 ? 1
+  : result.length == 1 ? 0
+  : undefined
+  result = result[index] // 0:begin, 1:manage...Offer, 2:end
+    .value()[kind]().value()
+  let offersClaimed = result._attributes.offersClaimed
+  let offer = result.offer().value()
+  let id = offer.offerId().low
+  let price_r = offer.price()._attributes
+
+  return { offer: { id, price_r, }, offersClaimedLength: offersClaimed.length, };
+}
+
+function offerDeleted (xdr, kind = 'manageBuyOfferResult') { // {{{1
+  let result = window.StellarSdk.xdr.TransactionResult.fromXDR(xdr, "base64")
+    .result().results()
+
+  //console.dir({ resultLength: result.length }, { depth: 1 })
+
+  let index = result.length == 3 ? 1
+  : result.length == 1 ? 0
+  : undefined
+  result = result[index] // 0:begin, 1:manage...Offer, 2:end
+    .value()[kind]().value()
+  let offersClaimed = result._attributes.offersClaimed
+  let offer = result.offer().value()
+
+  return {
+    offersClaimed, // []
+    offer,         // undefined
+  };
+}
+
+export { Orderbook, hexAssets, hexStartingBalance, offerCreated, offerDeleted, } // {{{1
 

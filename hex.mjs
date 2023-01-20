@@ -31,11 +31,6 @@ class Orderbook { // {{{1
     q.p = null // }}}3
   }
 
-  isEmpty () { // {{{2
-    let asks = this.asks ?? this.last.asks, bids = this.bids ?? this.last.bids
-    return bids.length == 0 && asks.length == 0;
-  }
-
   line () { // {{{2
     //console.dir(this, { depth: null })
 
@@ -48,6 +43,11 @@ class Orderbook { // {{{1
       r += (+e.amount) + '@' + (+e.price) + ' '
     }
     return r;
+  }
+
+  size () { // {{{2
+    let asks = this.asks ?? this.last.asks, bids = this.bids ?? this.last.bids
+    return bids.length + asks.length;
   }
 
   static depth = 3 // depth in time {{{2

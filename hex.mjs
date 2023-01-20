@@ -1,8 +1,12 @@
+import { timestamp, } from './utils.mjs' // {{{1
+
+let auxOrderbook = timestamp('Orderbook')
+
 class Orderbook { // {{{1
   constructor (data) { // {{{2
-    this.ts = Date.now()
+    this.ts = timestamp('Orderbook')
     if (Orderbook.same(data)) { // heartbeat
-      debug && console.log(this.ts - Orderbook.last.ts)
+      this.last = Orderbook.last
       return;
     }
     Object.assign(this, data) // {{{3
@@ -28,16 +32,19 @@ class Orderbook { // {{{1
   }
 
   isEmpty () { // {{{2
-    return this.bids.length == 0 && this.asks.length == 0;
+    let asks = this.asks ?? this.last.asks, bids = this.bids ?? this.last.bids
+    return bids.length == 0 && asks.length == 0;
   }
 
   line () { // {{{2
-    let r = ''
-    for (let e of this.bids) {
-      r = ' ' + (e.amount / e.price) + '@' + (+e.price) + r
+    //console.dir(this, { depth: null })
+
+    let r = '', asks = this.asks ?? this.last.asks, bids = this.bids ?? this.last.bids
+    for (let e of bids) {
+      r = ' ' + (+(hexaValue(e.amount / e.price))) + '@' + (+e.price) + r
     }
-    r += ' - '
-    for (let e of this.asks) {
+    r += ' : '
+    for (let e of asks) {
       r += (+e.amount) + '@' + (+e.price) + ' '
     }
     return r;
@@ -47,8 +54,8 @@ class Orderbook { // {{{1
 
   static diff (q) { // {{{2
     const adiff = (q, p) => { // amount difference for same prices
-      q.amount -= p.amount
-      return q;
+      return q.amount - p.amount;
+      //return q;
     }
     const peq = (a, b) => a.price_r.n == b.price_r.n && a.price_r.d == b.price_r.d
     const notIn = (a1, a2) => a1.filter(e1 => !a2.find(e2 => peq(e1, e2)))
@@ -108,13 +115,71 @@ class Orderbook { // {{{1
   // }}}2
 }
 
-const hexStartingBalance = '1000000000'
+/** function dog2hexa (bigInt) // {{{1
+ * Drops Of Gratitude (DOGs) are internal representation of HEXAs. 
+ * 1 HEXA is 10000000 DOGs. 1 DOG is 0.0000001 HEXA.
+ * A HEXA is a String, a DOG is a BigInt.
+ */
+function dog2hexa (bigInt) {
+  const truncated  = bigInt / 10000000n
+  const fractional = bigInt % 10000000n
+  let zeroes
+  switch (fractional.toString().length) {
+    case 1:
+      zeroes = '000000'
+      break
+    case 2:
+      zeroes = '00000'
+      break
+    case 3:
+      zeroes = '0000'
+      break
+    case 4:
+      zeroes = '000'
+      break
+    case 5:
+      zeroes = '00'
+      break
+    case 6:
+      zeroes = '0'
+      break
+    case 7:
+      zeroes = ''
+  }
+  return truncated.toString() + '.' + zeroes + fractional.toString();
+}
 
 function hexAssets (hex) { // {{{1
   hex.assets = [
     new window.StellarSdk.Asset('ClawableHexa', hex.issuerClawableHexa),
     new window.StellarSdk.Asset('HEXA', hex.issuerHEXA),
   ];
+}
+
+const hexStartingBalance = '1000000000' // {{{1
+
+function hexaValue (d) { // {{{1
+  d *= 10000000
+  d = Math.round(d)
+  return dog2hexa(BigInt(d));
+}
+
+/** function hexa2dog (str) // {{{1
+ * Drops Of Gratitude (DOGs) are internal representation of HEXAs. 
+ * 1 HEXA is 10000000 DOGs. 
+ * A HEXA is a String, a DOG is a BigInt.
+ */
+function hexa2dog (str) {
+  let dotIndex = str.indexOf('.')
+  if (dotIndex < 0) {
+    return BigInt(str) * 10000000n;
+  }
+  let truncated = dotIndex == 0 ? '0' : str.slice(0, dotIndex)
+  let fractional = dotIndex == 0 ? '0000000' : str.slice(dotIndex + 1)
+  while (fractional.length < 7) {
+    fractional += '0'
+  }
+  return BigInt(truncated) * 10000000n + BigInt(fractional);
 }
 
 function offerCreated (xdr, kind = 'manageBuyOfferResult') { // {{{1
@@ -152,9 +217,11 @@ function offerDeleted (xdr, kind = 'manageBuyOfferResult') { // {{{1
 
   return {
     offersClaimed, // []
-    offer,         // undefined
+    //offer,         // undefined
   };
 }
 
-export { Orderbook, hexAssets, hexStartingBalance, offerCreated, offerDeleted, } // {{{1
-
+export { // {{{1
+  Orderbook, dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
+  offerCreated, offerDeleted, 
+}

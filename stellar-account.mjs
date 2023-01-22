@@ -72,6 +72,13 @@ class Account { // {{{1
     return this;
   }
 
+  manageBuyOffer (opts) { // {{{2
+    this.#tx().addOperation(this.sdk.Operation.manageBuyOffer(
+      opts
+    ))
+    return this;
+  }
+
   manageSellOffer (opts) { // {{{2
     this.#tx().addOperation(this.sdk.Operation.manageSellOffer(
       opts

@@ -10,7 +10,7 @@ class Orderbook { // {{{1
       return;
     }
     Object.assign(this, data) // {{{3
-
+/*
     this.mp = [] // the midprice array {{{3
     let depth = Math.max(this.asks.length, this.bids.length)
     for (let i = 0; i < depth; i++) {
@@ -18,7 +18,7 @@ class Orderbook { // {{{1
       let midprice  = (ai + bi) / 2
       this.mp.push(midprice)
     }
-
+*/
     this.p = Orderbook.last // maintain the time series depth {{{3
     Orderbook.last = this
     let q = this

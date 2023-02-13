@@ -200,8 +200,8 @@ async function doGET ( // {{{1
 function pGET ( // {{{1
   path = '', 
   parms = '', 
-  secret = null, 
-  log = false, 
+  secret = null,
+  noget = false,
   site = CFW_URL_DEV
 ) {
   let keypair = secret ? window.StellarSdk.Keypair.fromSecret(secret)
@@ -211,8 +211,10 @@ function pGET ( // {{{1
   signature = encodeURIComponent(signature.toString('base64'))
   let parmsTail = `sk=ASK_&network=${window.StellarNetwork.id}&${data}=${signature}`
   parms = parms.length == 0 ? `?${parmsTail}` : parms + `&${parmsTail}`
-  log && console.log('pGET parms', parms)
 
+  if (noget) {
+    return `${site}${path}${parms}`;
+  }
   return fetch(`${site}${path}${parms}`, { method: 'GET', })
     .then(async response => {
       if (response.ok) {

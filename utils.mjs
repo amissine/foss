@@ -162,6 +162,10 @@ class Semaphore { // {{{1
   // }}}2
 }
 
+function b64_to_utf8( str ) { // {{{1
+  return decodeURIComponent(escape(atob( str )));
+}
+
 function delay (ms, result = 'OK') { // {{{1
   return new Promise((resolve, reject) => {
     setTimeout(() => resolve(result), ms)
@@ -231,6 +235,48 @@ function pGET ( // {{{1
     });
 }
 
+function retrieveItem (itemName) { // {{{1
+  if (!storageAvailable('localStorage')) {
+    throw 'localStorage NOT available'
+  }
+  let item = localStorage.getItem(itemName)
+  return item ? JSON.parse(b64_to_utf8(item))[itemName] : undefined;
+}
+
+function storageAvailable(type) { // {{{1
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+}
+
+function storeItem (itemName, item) { // {{{1
+  if (!storageAvailable('localStorage')) {
+    throw 'localStorage NOT available'
+  }
+  let itemWrap = {}
+  itemWrap[itemName] = item
+  localStorage.setItem(itemName, utf8_to_b64(JSON.stringify(itemWrap)))
+}
+
 let timestamps = {} // function timestamp (label = 'default') {{{1
 function timestamp (label = 'default') {
   let q = Date.now()
@@ -239,4 +285,11 @@ function timestamp (label = 'default') {
   return q - p;
 }
 
-export { CFW_URL_DEV, Semaphore, delay, doGET, pGET, timestamp, } // {{{1
+function utf8_to_b64( str ) { // {{{1
+  return btoa(unescape(encodeURIComponent( str )));
+}
+
+export { // {{{1
+  CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, pGET, 
+  retrieveItem, storeItem, timestamp, utf8_to_b64,
+}

@@ -12,7 +12,7 @@ OfferResults.prototype.toString = function offerResultsToString () {
     case 'manageOfferDeleted':
       return or0.wasImmediatelyFilled ? 
         ` amountBought ${or0.amountBought}, amountSold ${or0.amountSold}`
-      : ' deleted.';
+      : ' deleted';
     default:
       throw new Error(`TODO ${or0.effect}`);
   }

@@ -2,20 +2,7 @@ import { timestamp, } from './utils.mjs' // {{{1
 
 function OfferResults (tx) { // {{{1
   this.offerResults = tx.offerResults
-}
-
-OfferResults.prototype.toString = function offerResultsToString () {
-  let or0 = this.offerResults[0]
-  switch (or0.effect) { // TODO: multiple results
-    case 'manageOfferCreated':
-      return ` created id ${or0.currentOffer.offerId}`;
-    case 'manageOfferDeleted':
-      return or0.wasImmediatelyFilled ? 
-        ` amountBought ${or0.amountBought}, amountSold ${or0.amountSold}`
-      : ' deleted';
-    default:
-      throw new Error(`TODO ${or0.effect}`);
-  }
+  return this;
 }
 
 let auxOrderbook = timestamp('Orderbook') // {{{1

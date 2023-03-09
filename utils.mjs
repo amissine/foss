@@ -243,6 +243,15 @@ function retrieveItem (itemName) { // {{{1
   return item ? JSON.parse(b64_to_utf8(item))[itemName] : undefined;
 }
 
+function serviceRequest (servicePath, servicePK, serviceConsumerSK, rtURL) { // {{{1
+  let url = pGET(
+    `/request-service/${servicePK}/${servicePath}`, 
+    `?REQUEST_TARGET_URL=${encodeURIComponent(rtURL)}`, 
+    serviceConsumerSK, true
+  )
+  window.open(url, '_blank')
+}
+
 function storageAvailable(type) { // {{{1
     var storage;
     try {
@@ -291,5 +300,5 @@ function utf8_to_b64( str ) { // {{{1
 
 export { // {{{1
   CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, pGET, 
-  retrieveItem, storeItem, timestamp, utf8_to_b64,
+  retrieveItem, serviceRequest, storeItem, timestamp, utf8_to_b64,
 }

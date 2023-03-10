@@ -135,10 +135,13 @@ class Account { // {{{1
       this.keypair?.canSign() && t.sign(this.keypair)
     }
     return this.server.submitTransaction(t)
-    .catch(e => console.error(
-      e.response.data.extras ? e.response.data.extras.result_codes
-      : e.response.data,
-    ));
+    .catch(e => {
+      console.error(t)
+      console.error(
+        e.response.data.extras ? e.response.data.extras.result_codes
+        : e.response.data,
+      )
+    });
   }
 
   toXDR (keypairs = null) { // {{{2

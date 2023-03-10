@@ -1,6 +1,11 @@
 import { timestamp, } from './utils.mjs' // {{{1
 
-let auxOrderbook = timestamp('Orderbook')
+function OfferResults (tx) { // {{{1
+  this.offerResults = tx.offerResults
+  return this;
+}
+
+let auxOrderbook = timestamp('Orderbook') // {{{1
 
 class Orderbook { // {{{1
   constructor (data) { // {{{2
@@ -222,6 +227,7 @@ function offerDeleted (xdr, kind = 'manageBuyOfferResult') { // {{{1
 }
 
 export { // {{{1
-  Orderbook, dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
+  OfferResults, Orderbook, 
+  dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
   offerCreated, offerDeleted, 
 }

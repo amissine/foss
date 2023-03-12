@@ -223,8 +223,9 @@ class User extends Account { // Stellar HEX User {{{1
       b.asset_code == 'ClawableHexa' && b.asset_issuer == hex.issuerClawableHexa
     )[0].balance
 
-    return (await this.load()).pay(amountCH).trust(hex.assets[0], '0').
-      pay(amountH).trust(hex.assets[1], '0').
+    return (await this.load()).
+      pay(hex.assets[0], amountCH).trust(hex.assets[0], '0').
+      pay(hex.assets[1], amountH).trust(hex.assets[1], '0').
       merge(hex.agent);
   }
 

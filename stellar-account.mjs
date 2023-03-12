@@ -214,7 +214,7 @@ class User extends Account { // Stellar HEX User {{{1
     .setProps();
   }
  
-  async remove () { // {{{2
+  remove () { // {{{2
     let hex = window.StellarNetwork.hex
     let amountH = this.loaded.balances.filter(b =>
       b.asset_code == 'HEXA' && b.asset_issuer == hex.issuerHEXA

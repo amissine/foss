@@ -94,9 +94,6 @@ class Account { // {{{1
     this.#tx().addOperation(this.sdk.Operation.accountMerge({
       source: this.keypair.publicKey(), destination: to
     }))
-
-    console.log('typeof this.submit', typeof this.submit)
-
     return this;
   }
 
@@ -219,15 +216,14 @@ class User extends Account { // Stellar HEX User {{{1
  
   async remove () { // {{{2
     let hex = window.StellarNetwork.hex
-    let amountH = (await this.load()).loaded.balances.filter(b =>
+    let amountH = this.loaded.balances.filter(b =>
       b.asset_code == 'HEXA' && b.asset_issuer == hex.issuerHEXA
     )[0].balance
-    let amountCH = (await this.load()).loaded.balances.filter(b =>
+    let amountCH = this.loaded.balances.filter(b =>
       b.asset_code == 'ClawableHexa' && b.asset_issuer == hex.issuerClawableHexa
     )[0].balance
 
-    return (await this.load()).
-      pay(hex.assets[0], amountCH).trust(hex.assets[0], '0').
+    return this.pay(hex.assets[0], amountCH).trust(hex.assets[0], '0').
       pay(hex.assets[1], amountH).trust(hex.assets[1], '0').
       merge(hex.agent);
   }

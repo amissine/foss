@@ -94,6 +94,9 @@ class Account { // {{{1
     this.#tx().addOperation(this.sdk.Operation.accountMerge({
       source: this.keypair.publicKey(), destination: to
     }))
+
+    console.log('typeof this.submit', typeof this.submit)
+
     return this;
   }
 

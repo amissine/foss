@@ -64,6 +64,7 @@ class Semaphore { // {{{1
    */
   release () {
     this.signal();
+    return true;
   }
 
   /** signal {{{2

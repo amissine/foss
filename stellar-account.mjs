@@ -67,7 +67,7 @@ class Account { // {{{1
       return this;
     }
     this.loaded = await this.server.loadAccount(this.keypair.publicKey())
-    .catch(e => { throw e; })
+    //.catch(e => { throw e; }) // TODO something more meaningful
 
     return this;
   }

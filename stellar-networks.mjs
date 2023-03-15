@@ -1,4 +1,4 @@
-// Generated on Fri Dec 23 14:06:27 EST 2022
+// Generated on Wed Mar 15 09:15:20 EDT 2023
 
 function stellarNetworks () { // {{{1
   let networks = [
@@ -27,9 +27,9 @@ function stellarNetworks () { // {{{1
     { // test {{{2
       id: 'test',
       hex: {
-        agent: 'GA53PUDSEQKWXQ4XE6Q4KQ465O7BUXKGP7KVICMFCY43ZEWJSOCMLBEB',
-        issuerClawableHexa: 'GAUPOPIKMDMTJRD3EOMW2FXD2UKECVOWS2PGPSSGG7SZ7BYCK7ADI7AY',
-        issuerHEXA: 'GDKMEV2X2IFEE4GU55OV7CXM72NJOPPSJJC6QIN2TLNGP63JKS55IEBQ',
+        agent: 'GDBHKLFVOPPLR4SRPNO3S4KU5TUGGZY6QSW77D4BAYI367CZXXMQWLYB',
+        issuerClawableHexa: 'GBK337NLODFRL5NGTOLQBFUNKANPU6GK2IX4DOPVXU4N4XEPJMIUMYIO',
+        issuerHEXA: 'GBLICEQU2TUSCRMS6KZZ4Z6YJRLATTUVVQ5TU6KQ25TLQD5GWQPYGYZU',
       },
       name: 'TESTNET',
       passphrase: 'Test SDF Network ; September 2015',

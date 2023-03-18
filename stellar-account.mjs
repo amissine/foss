@@ -289,21 +289,21 @@ function chunkDescOps (description, source = null) { // {{{1
     let chunk = description.slice(0, 64)
     description = description.slice(64)
     if (source) {
-      ops.push(op({ name: `data${i}`, value: chunk, source }))
-      ops.push(op({ name: `data${i}`, value: null, source }))
+      ops.push(op.call(op, { name: `data${i}`, value: chunk, source }))
+      ops.push(op.call(op, { name: `data${i}`, value: null, source }))
     } else {
-      ops.push(op({ name: `data${i}`, value: chunk, }))
-      ops.push(op({ name: `data${i}`, value: null, }))
+      ops.push(op.call(op, { name: `data${i}`, value: chunk, }))
+      ops.push(op.call(op, { name: `data${i}`, value: null, }))
     }
     i++
   }
   if (description.length > 0) {
     if (source) {
-      ops.push(op({ name: `data${i}`, value: description, source }))
-      ops.push(op({ name: `data${i}`, value: null, source }))
+      ops.push(op.call(op, { name: `data${i}`, value: description, source }))
+      ops.push(op.call(op, { name: `data${i}`, value: null, source }))
     } else {
-      ops.push(op({ name: `data${i}`, value: description, }))
-      ops.push(op({ name: `data${i}`, value: null, }))
+      ops.push(op.call(op, { name: `data${i}`, value: description, }))
+      ops.push(op.call(op, { name: `data${i}`, value: null, }))
     }
   }
 

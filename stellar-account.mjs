@@ -214,7 +214,7 @@ class User extends Account { // Stellar HEX User {{{1
     .setProps();
   }
  
-  remove () { // {{{2
+  remove (mergeTo) { // {{{2
     let hex = window.StellarNetwork.hex
     let amountH = this.loaded.balances.filter(b =>
       b.asset_code == 'HEXA' && b.asset_issuer == hex.issuerHEXA
@@ -225,7 +225,7 @@ class User extends Account { // Stellar HEX User {{{1
 
     return this.pay(hex.assets[0], amountCH).trust(hex.assets[0], '0').
       pay(hex.assets[1], amountH).trust(hex.assets[1], '0').
-      merge(hex.agent);
+      merge(mergeTo);
   }
 
   setProps (props = this) { // {{{2

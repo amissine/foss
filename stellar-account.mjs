@@ -195,6 +195,40 @@ class Account { // {{{1
   // }}}2
 }
 
+class Make { // {{{1
+  constructor (opts) { // {{{2
+    Object.assign(this, opts)
+    this.fee = Make.fee
+
+    // Chunk description Operations into this.data 
+    if (this.validity) { // making, not retrieving an offer
+      this.data = chunkDescOps(this.description) // TODO sponsored users
+    }
+  }
+
+  static fee = '0.0000100' // {{{2
+
+  // }}}2
+}
+
+class Offer extends Make { // {{{1
+  constructor (opts) { // {{{2
+    super(opts)
+    this.memo = window.StellarSdk.Memo.text('Offer')
+  }
+
+  // }}}2
+}
+
+class Request extends Make { // {{{1
+  constructor (opts) { // {{{2
+    super(opts)
+    this.memo = window.StellarSdk.Memo.text('Request')
+  }
+
+  // }}}2
+}
+
 class User extends Account { // Stellar HEX User {{{1
   constructor (opts) { // {{{2
     super(opts)
@@ -241,6 +275,41 @@ class User extends Account { // Stellar HEX User {{{1
   // }}}2
 }
 
+function chunkDescOps (description, source = null) { // {{{1
+  // Check description.length
+  if (description.length < 1 || description.length > 2000) {
+    throw `- chunkDescOps: description.length is ${description.length}`
+  }
+  let op = window.StellarSdk.Operation.manageData
+
+  // Chunk description Operations into ops array
+  let i = 0
+  let ops = []
+  while (description.length > 64) {
+    let chunk = description.slice(0, 64)
+    description = description.slice(64)
+    if (source) {
+      ops.push(op({ name: `data${i}`, value: chunk, source }))
+      ops.push(op({ name: `data${i}`, value: null, source }))
+    } else {
+      ops.push(op({ name: `data${i}`, value: chunk, }))
+      ops.push(op({ name: `data${i}`, value: null, }))
+    }
+    i++
+  }
+  if (description.length > 0) {
+    if (source) {
+      ops.push(op({ name: `data${i}`, value: description, source }))
+      ops.push(op({ name: `data${i}`, value: null, source }))
+    } else {
+      ops.push(op({ name: `data${i}`, value: description, }))
+      ops.push(op({ name: `data${i}`, value: null, }))
+    }
+  }
+
+  return ops;
+}
+
 function now (deltaMs) { // {{{1
   return BigInt.asUintN(
     64, 
@@ -249,5 +318,5 @@ function now (deltaMs) { // {{{1
 }
 
 export { // {{{1
-  Account, User,
+  Account, Make, Offer, Request, User,
 }

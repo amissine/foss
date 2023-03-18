@@ -280,7 +280,6 @@ function chunkDescOps (description, source = null) { // {{{1
   if (description.length < 1 || description.length > 2000) {
     throw `- chunkDescOps: description.length is ${description.length}`
   }
-  let op = window.StellarSdk.Operation.manageData
 
   // Chunk description Operations into ops array
   let i = 0
@@ -289,21 +288,21 @@ function chunkDescOps (description, source = null) { // {{{1
     let chunk = description.slice(0, 64)
     description = description.slice(64)
     if (source) {
-      ops.push(op.call(op, { name: `data${i}`, value: chunk, source }))
-      ops.push(op.call(op, { name: `data${i}`, value: null, source }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: chunk, source }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, source }))
     } else {
-      ops.push(op.call(op, { name: `data${i}`, value: chunk, }))
-      ops.push(op.call(op, { name: `data${i}`, value: null, }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: chunk, }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, }))
     }
     i++
   }
   if (description.length > 0) {
     if (source) {
-      ops.push(op.call(op, { name: `data${i}`, value: description, source }))
-      ops.push(op.call(op, { name: `data${i}`, value: null, source }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: description, source }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, source }))
     } else {
-      ops.push(op.call(op, { name: `data${i}`, value: description, }))
-      ops.push(op.call(op, { name: `data${i}`, value: null, }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: description, }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, }))
     }
   }
 

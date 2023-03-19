@@ -258,12 +258,14 @@ class User extends Account { // Stellar HEX User {{{1
 
   make (or) { // Offer or Request {{{2
     const vtid = tid => or.validityTimeoutId = tid
+    let hex = this.network.hex
+    hexAssets(hex)
 
     delete this.transaction
     for (let d of or.data) {
       this.tX(or.memo).addOperation(d)
     }
-    return this.pay(or.fee).submit().then(txResultBody => {
+    return this.pay(hex.assets[1], or.fee).submit().then(txResultBody => {
       !!or.validity && or.validity != '0' &&
         vtid(setTimeout(_ => or.invalidate(), or.validity * 1000))
     })

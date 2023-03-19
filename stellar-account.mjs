@@ -238,6 +238,10 @@ class Request extends Make { // {{{1
 }
 
 class User extends Account { // Stellar HEX User {{{1
+  #tx (memo = null) { // {{{2
+    return super.#tx(memo);
+  }
+
   constructor (opts) { // {{{2
     super(opts)
   }

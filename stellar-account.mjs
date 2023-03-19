@@ -206,6 +206,14 @@ class Make { // {{{1
     }
   }
 
+  checkTakes () { // {{{2
+    console.log('TODO checkTakes', this.memo)
+  }
+
+  invalidate () { // {{{2
+    console.log('TODO invalidate', this.memo)
+  }
+
   static fee = '0.0000100' // {{{2
 
   // }}}2
@@ -247,7 +255,20 @@ class User extends Account { // Stellar HEX User {{{1
     .end(hex.agent)
     .setProps();
   }
- 
+
+  make (or) { // Offer or Request {{{2
+    const vtid = tid => or.validityTimeoutId = tid
+
+    delete this.transaction
+    for (let d of or.data) {
+      this.#tx(or.memo).addOperation(d)
+    }
+    return this.pay(or.fee).submit().then(txResultBody => {
+      !!or.validity && or.validity != '0' &&
+        vtid(setTimeout(_ => or.invalidate(), or.validity * 1000))
+    })
+  }
+
   remove (mergeTo) { // {{{2
     let hex = window.StellarNetwork.hex
     let amountH = this.loaded.balances.filter(b =>

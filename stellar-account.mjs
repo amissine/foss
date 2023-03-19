@@ -1,7 +1,7 @@
 import { hexAssets, } from './hex.mjs' // {{{1
 
 class Account { // {{{1
-  #opts ( // {{{2
+  opts ( // {{{2
     memo,
     fee = this.sdk.BASE_FEE,
     networkPassphrase = this.sdk.Networks[this.network.name],
@@ -15,11 +15,11 @@ class Account { // {{{1
     return { fee, networkPassphrase, timebounds, memo, withMuxing };
   }
 
-  #tx (memo = null) { // {{{2
+  tX (memo = null) { // {{{2
     if (!this.transaction) {
       delete this.xdr
       this.transaction = new this.sdk.TransactionBuilder(
-        this.loaded, this.#opts(memo)
+        this.loaded, this.opts(memo)
       )
     }
     return this.transaction;
@@ -36,21 +36,21 @@ class Account { // {{{1
   }
 
   begin (sponsoredId) { // {{{2
-    this.#tx().addOperation(
+    this.tX().addOperation(
       this.sdk.Operation.beginSponsoringFutureReserves({ sponsoredId })
     )
     return this;
   }
 
   create (destination, startingBalance) { // {{{2
-    this.#tx().addOperation(this.sdk.Operation.createAccount({
+    this.tX().addOperation(this.sdk.Operation.createAccount({
       destination, startingBalance
     }))
     return this;
   }
 
   end (source) { // {{{2
-    this.#tx().addOperation(
+    this.tX().addOperation(
       this.sdk.Operation.endSponsoringFutureReserves({ source })
     )
     return this;
@@ -73,7 +73,7 @@ class Account { // {{{1
   }
 
   manageBuyOffer (opts) { // {{{2
-    this.#tx().addOperation(this.sdk.Operation.manageBuyOffer(
+    this.tX().addOperation(this.sdk.Operation.manageBuyOffer(
       opts
     ))
     return this;
@@ -84,14 +84,14 @@ class Account { // {{{1
   }
 
   manageSellOffer (opts) { // {{{2
-    this.#tx().addOperation(this.sdk.Operation.manageSellOffer(
+    this.tX().addOperation(this.sdk.Operation.manageSellOffer(
       opts
     ))
     return this;
   }
 
   merge (to) { // {{{2
-    this.#tx().addOperation(this.sdk.Operation.accountMerge({
+    this.tX().addOperation(this.sdk.Operation.accountMerge({
       source: this.keypair.publicKey(), destination: to
     }))
     return this;
@@ -103,7 +103,7 @@ class Account { // {{{1
     source = null,
     destination = this.network.hex.agent
   ) { 
-    this.#tx().addOperation(
+    this.tX().addOperation(
       source ? this.sdk.Operation.payment({ destination, asset, amount, source })
       : this.sdk.Operation.payment({ destination, asset, amount })
     )
@@ -114,7 +114,7 @@ class Account { // {{{1
     if (v === undefined) {
       return this;
     }
-    this.#tx().addOperation(this.sdk.Operation.manageData(
+    this.tX().addOperation(this.sdk.Operation.manageData(
       source ? { name: k, value: v, source } 
       : { name: k, value: v }
     ))
@@ -122,7 +122,7 @@ class Account { // {{{1
   }
 
   setOpts (opts) { // {{{2
-    this.#tx().addOperation(this.sdk.Operation.setOptions(opts))
+    this.tX().addOperation(this.sdk.Operation.setOptions(opts))
     return this;
   }
 
@@ -174,7 +174,7 @@ class Account { // {{{1
     let opts = Object.assign(
       { asset }, limit ? { limit } : null, source ? { source } : null
     )
-    this.#tx().addOperation(this.sdk.Operation.changeTrust(opts))
+    this.tX().addOperation(this.sdk.Operation.changeTrust(opts))
     return this;
   }
 
@@ -238,10 +238,6 @@ class Request extends Make { // {{{1
 }
 
 class User extends Account { // Stellar HEX User {{{1
-  #tx (memo = null) { // {{{2
-    return super.#tx(memo);
-  }
-
   constructor (opts) { // {{{2
     super(opts)
   }
@@ -265,7 +261,7 @@ class User extends Account { // Stellar HEX User {{{1
 
     delete this.transaction
     for (let d of or.data) {
-      this.#tx(or.memo).addOperation(d)
+      this.tX(or.memo).addOperation(d)
     }
     return this.pay(or.fee).submit().then(txResultBody => {
       !!or.validity && or.validity != '0' &&

@@ -222,7 +222,7 @@ class Make { // {{{1
 class Offer extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.memo = window.StellarSdk.Memo.text('Offer')
+    this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
   }
 
   // }}}2
@@ -231,7 +231,7 @@ class Offer extends Make { // {{{1
 class Request extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.memo = window.StellarSdk.Memo.text('Request')
+    this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
   }
 
   // }}}2

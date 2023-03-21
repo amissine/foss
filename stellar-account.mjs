@@ -332,6 +332,16 @@ function chunkDescOps (description, source = null) { // {{{1
   return ops;
 }
 
+function description (operations) { // {{{1
+  let result = ''
+  for (let o of operations.records) {
+    if (o.type == 'manage_data' && o.value.length > 0) {
+      result += Buffer.from(o.value, 'base64').toString()
+    }
+  }
+  return result;
+}
+
 function now (deltaMs) { // {{{1
   return BigInt.asUintN(
     64, 
@@ -341,4 +351,5 @@ function now (deltaMs) { // {{{1
 
 export { // {{{1
   Account, Make, Offer, Request, User,
+  description,
 }

@@ -28,9 +28,9 @@ class Account { // {{{1
   constructor (opts = null) { // {{{2
     this.network = window.StellarNetwork
     this.sdk = window.StellarSdk
-    this.server = window.stellarHorizonServer ?? new this.sdk.Server(this.network.url)
-    if (!window.stellarHorizonServer) {
-      window.stellarHorizonServer = this.server // always a singleton
+    this.server = window.StellarHorizonServer ?? new this.sdk.Server(this.network.url)
+    if (!window.StellarHorizonServer) {
+      window.StellarHorizonServer = this.server // always a singleton
     }
     Object.assign(this, opts)
   }

@@ -207,7 +207,7 @@ class Make { // {{{1
   }
 
   checkTakes () { // {{{2
-    console.log('TODO checkTakes', this.memo)
+    console.log('TODO checkTakes', this)
   }
 
   invalidate () { // {{{2

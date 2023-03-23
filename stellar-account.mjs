@@ -202,7 +202,7 @@ class Make { // {{{1
 
     // Chunk description Operations into this.data 
     if (this.validity) { // making, not retrieving an offer
-      this.data = chunkDescOps(this.description) // TODO sponsored users
+      this.data = chunkDescOps(this.description)
     }
   }
 
@@ -227,7 +227,11 @@ class Make { // {{{1
 class Offer extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+    this.validity && this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+  }
+
+  take (opts) { // {{{2
+    console.log(this, opts)
   }
 
   // }}}2
@@ -236,7 +240,11 @@ class Offer extends Make { // {{{1
 class Request extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
+    this.validity && this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
+  }
+
+  take (opts) { // {{{2
+    console.log(this, opts)
   }
 
   // }}}2

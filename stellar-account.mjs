@@ -227,7 +227,9 @@ class Make { // {{{1
 class Offer extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.validity && this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+    if (this.validity) {
+      this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+    }
   }
 
   take (opts) { // {{{2
@@ -240,7 +242,9 @@ class Offer extends Make { // {{{1
 class Request extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.validity && this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
+    if (this.validity) {
+      this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
+    }
   }
 
   take (opts) { // {{{2

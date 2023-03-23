@@ -198,10 +198,10 @@ class Account { // {{{1
 class Make { // {{{1
   constructor (opts) { // {{{2
     Object.assign(this, opts)
-    this.fee = Make.fee
 
     // Chunk description Operations into this.data 
     if (this.validity) { // making, not retrieving an offer
+      this.fee = Make.fee
       this.data = chunkDescOps(this.description)
     }
   }

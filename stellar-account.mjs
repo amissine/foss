@@ -206,8 +206,13 @@ class Make { // {{{1
     }
   }
 
-  checkTakes () { // {{{2
-    console.log('TODO checkTakes', this)
+  checkTakes (streams, onmessage) { // {{{2
+    streams.push({ 
+      close: window.StellarHorizonServer.effects().forAccount(this.makerPK).stream({
+        onerror:   e => console.error(e),
+        onmessage,
+      })
+    })
   }
 
   invalidate () { // {{{2
@@ -257,6 +262,7 @@ class User extends Account { // Stellar HEX User {{{1
   }
 
   make (or) { // Offer or Request {{{2
+    or.makerPK = this.loaded.id
     const vtid = tid => or.validityTimeoutId = tid
     let hex = this.network.hex
     hexAssets(hex)

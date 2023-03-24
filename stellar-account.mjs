@@ -264,6 +264,8 @@ class Offer extends Make { // {{{1
 
   } // }}}3
 */
+  }
+
   // }}}2
 }
 

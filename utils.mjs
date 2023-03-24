@@ -203,7 +203,7 @@ async function doGET ( // {{{1
 }
 
 function getClaimableBalanceId (result_xdr, index = 0) { // {{{1
-  let txResult = StellarSdk.xdr.TransactionResult.fromXDR(result_xdr, "base64");
+  let txResult = window.StellarSdk.xdr.TransactionResult.fromXDR(result_xdr, "base64");
   let results = txResult.result().results();
   let operationResult = results[index].value().createClaimableBalanceResult();
   return operationResult.balanceId().toXDR("hex");

@@ -202,6 +202,13 @@ async function doGET ( // {{{1
   return result;
 }
 
+function getClaimableBalanceId (result_xdr, index = 0) { // {{{1
+  let txResult = StellarSdk.xdr.TransactionResult.fromXDR(result_xdr, "base64");
+  let results = txResult.result().results();
+  let operationResult = results[index].value().createClaimableBalanceResult();
+  return operationResult.balanceId().toXDR("hex");
+}
+
 function pGET ( // {{{1
   path = '', 
   parms = '', 
@@ -311,6 +318,7 @@ function utf8_to_b64( str ) { // {{{1
 }
 
 export { // {{{1
-  CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, pGET, parseHEXA,
+  CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, getClaimableBalanceId,
+  pGET, parseHEXA,
   retrieveItem, serviceRequest, storeItem, timestamp, utf8_to_b64,
 }

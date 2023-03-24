@@ -1,5 +1,5 @@
 import { hexAssets, } from './hex.mjs' // {{{1
-import { parseHEXA, } from './utils.mjs'
+import { getClaimableBalanceId, parseHEXA, } from './utils.mjs'
 
 class Account { // {{{1
   opts ( // {{{2
@@ -40,6 +40,14 @@ class Account { // {{{1
     this.tX().addOperation(
       this.sdk.Operation.beginSponsoringFutureReserves({ sponsoredId })
     )
+    return this;
+  }
+
+  cb (ccb, memo, data = []) { // create/claim Claimable Balance, manageData {{{2
+    this.tX(memo).addOperation(ccb)
+    for (let d of data) {
+      this.tX().addOperation(d)
+    }
     return this;
   }
 
@@ -234,35 +242,39 @@ class Offer extends Make { // {{{1
     }
   }
 
-  take (opts) { // {{{2
+  async take (opts) { // {{{2
     console.log(this, opts)
-/*
     let claimants = [
-      new StellarSdk.Claimant(
-        make.tx.source_account,
-        opts.validity ?
-          opts.validity == '0' ? StellarSdk.Claimant.predicateUnconditional()
-          : StellarSdk.Claimant.predicateBeforeRelativeTime(opts.validity)
-        : StellarSdk.Claimant.predicateUnconditional()
+      new window.StellarSdk.Claimant(
+        this.makerPK,
+        !opts.validity || opts.validity == '0' ? // seconds
+          window.StellarSdk.Claimant.predicateUnconditional()
+        : window.StellarSdk.Claimant.predicateBeforeRelativeTime(opts.validity)
       ),
-      new StellarSdk.Claimant( // taker can reclaim anytime
-        this.found?.account_id ?? this.loaded.account_id,
-        StellarSdk.Claimant.predicateUnconditional()
+      new window.StellarSdk.Claimant( // taker can reclaim anytime
+        opts.taker.keypair.publicKey(),
+        window.StellarSdk.Claimant.predicateUnconditional()
       )
     ]
-    let ccb = StellarSdk.Operation.createClaimableBalance({ claimants,
-      asset: process.session.asset,
-      amount: dog2hexa(
-        hexa2dog(opts.amount ?? '0') + 100n // taker's fee
-      ),
+    /*
+    let ccbH = window.StellarSdk.Operation.createClaimableBalance({ claimants,
+      asset: window.StellarNetwork.hex.assets[1], 
+      amount: Make.fee,
     })
-    // Submit the tx {{{3
-    await this.load() 
-    let txTake = await this.cb(ccb, StellarSdk.Memo.hash(make.tx.id), t.data)
-    .submit()
-    let balanceId = getClaimableBalanceId(txTake.result_xdr), self = this
+    */
+    let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
+      asset: window.StellarNetwork.hex.assets[0], 
+      amount: opts.amount ?? this.amount,
+    })
 
-  } // }}}3
+    // Submit the tx {{{3
+    let taker = await new User(opts.taker).load() 
+    let txTake = await taker.cb(ccb, window.StellarSdk.Memo.hash(this.txId)
+    ).submit()
+    console.log('take balanceId',  getClaimableBalanceId(txTake.result_xdr))
+
+    // }}}3
+/*
 */
   }
 

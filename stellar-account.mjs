@@ -1,4 +1,5 @@
 import { hexAssets, } from './hex.mjs' // {{{1
+import { parseHEXA, } from './util.mjs'
 
 class Account { // {{{1
   opts ( // {{{2
@@ -198,10 +199,11 @@ class Account { // {{{1
 class Make { // {{{1
   constructor (opts) { // {{{2
     Object.assign(this, opts)
+    this.amount ??= parseHEXA(this.description) // === ClawableHEXA ==
 
     // Chunk description Operations into this.data 
     if (this.validity) { // making, not retrieving an offer
-      this.fee = Make.fee
+      this.fee = Make.fee                       // === HEXA ==========
       this.data = chunkDescOps(this.description)
     }
   }
@@ -234,8 +236,34 @@ class Offer extends Make { // {{{1
 
   take (opts) { // {{{2
     console.log(this, opts)
-  }
+/*
+    let claimants = [
+      new StellarSdk.Claimant(
+        make.tx.source_account,
+        opts.validity ?
+          opts.validity == '0' ? StellarSdk.Claimant.predicateUnconditional()
+          : StellarSdk.Claimant.predicateBeforeRelativeTime(opts.validity)
+        : StellarSdk.Claimant.predicateUnconditional()
+      ),
+      new StellarSdk.Claimant( // taker can reclaim anytime
+        this.found?.account_id ?? this.loaded.account_id,
+        StellarSdk.Claimant.predicateUnconditional()
+      )
+    ]
+    let ccb = StellarSdk.Operation.createClaimableBalance({ claimants,
+      asset: process.session.asset,
+      amount: dog2hexa(
+        hexa2dog(opts.amount ?? '0') + 100n // taker's fee
+      ),
+    })
+    // Submit the tx {{{3
+    await this.load() 
+    let txTake = await this.cb(ccb, StellarSdk.Memo.hash(make.tx.id), t.data)
+    .submit()
+    let balanceId = getClaimableBalanceId(txTake.result_xdr), self = this
 
+  } // }}}3
+*/
   // }}}2
 }
 

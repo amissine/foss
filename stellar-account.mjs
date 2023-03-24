@@ -244,7 +244,7 @@ class Offer extends Make { // {{{1
 
   async take (opts) { // {{{2
     console.log(this, opts)
-    let claimants = [
+    let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(
         this.makerPK,
         !opts.validity || opts.validity == '0' ? // seconds
@@ -256,12 +256,6 @@ class Offer extends Make { // {{{1
         window.StellarSdk.Claimant.predicateUnconditional()
       )
     ]
-    /*
-    let ccbH = window.StellarSdk.Operation.createClaimableBalance({ claimants,
-      asset: window.StellarNetwork.hex.assets[1], 
-      amount: Make.fee,
-    })
-    */
     let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
       asset: window.StellarNetwork.hex.assets[0], 
       amount: opts.amount ?? this.amount,
@@ -271,11 +265,11 @@ class Offer extends Make { // {{{1
     let taker = await new User(opts.taker).load() 
     let txTake = await taker.cb(ccb, window.StellarSdk.Memo.hash(this.txId)
     ).submit()
-    console.log('take balanceId',  getClaimableBalanceId(txTake.result_xdr))
+    let balanceId = getClaimableBalanceId(txTake.result_xdr)
+    console.log('take balanceId', balanceId)
+    return balanceId;
 
     // }}}3
-/*
-*/
   }
 
   // }}}2

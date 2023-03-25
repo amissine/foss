@@ -242,7 +242,7 @@ class Offer extends Make { // {{{1
     }
   }
 
-  async take (opts) { // {{{2
+  take (opts) { // {{{2
     console.log(this, opts)
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(
@@ -262,12 +262,12 @@ class Offer extends Make { // {{{1
     })
 
     // Submit the tx {{{3
-    let taker = await new User(opts.taker).load() 
-    let txTake = await taker.cb(ccb, window.StellarSdk.Memo.hash(this.txId)
-    ).submit()
-    let balanceId = getClaimableBalanceId(txTake.result_xdr)
-    console.log('take balanceId', balanceId)
-    return balanceId;
+    new User(opts.taker).load().then(taker => taker.cb(
+      ccb, window.StellarSdk.Memo.hash(this.txId)
+    ).submit()).then(txTake => {
+      let balanceId = getClaimableBalanceId(txTake.result_xdr)
+      console.log('take balanceId', balanceId)
+    })
 
     // }}}3
   }

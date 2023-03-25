@@ -269,7 +269,7 @@ class Offer extends Make { // {{{1
       let balanceId = getClaimableBalanceId(txTake.result_xdr)
       console.log('take balanceId', balanceId)
       streams.push({
-        close: window.StellarHorizonServer.claimableBalances().claimableBalance(balanceId).stream({
+        close: window.StellarHorizonServer.claimableBalances().claimableBalance(balanceId).forEndpoint('claimable_balances', balanceId).stream({
           onerror:   e => console.error(e),
           onmessage,
         })

@@ -267,13 +267,17 @@ class Offer extends Make { // {{{1
       ccb, window.StellarSdk.Memo.hash(this.txId)
     ).submit()).then(txTake => {
       let balanceId = getClaimableBalanceId(txTake.result_xdr)
-      console.log('take balanceId', balanceId)
+      console.log('take balanceId', balanceId,
+        window.StellarHorizonServer.claimableBalances().claimableBalance(balanceId)
+      )
+      /*
       streams.push({
         close: window.StellarHorizonServer.claimableBalances().claimableBalance(balanceId).forEndpoint('claimable_balances', balanceId).stream({
           onerror:   e => console.error(e),
           onmessage,
         })
       })
+      */
     })
 
     // }}}3

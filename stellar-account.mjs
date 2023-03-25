@@ -43,7 +43,7 @@ class Account { // {{{1
     return this;
   }
 
-  cb (ccb, memo, data = []) { // create/claim Claimable Balance, manageData {{{2
+  cb (ccb, memo = null, data = []) { // create/claim Claimable Balance, manageData {{{2
     this.tX(memo).addOperation(ccb)
     for (let d of data) {
       this.tX().addOperation(d)
@@ -242,8 +242,9 @@ class Offer extends Make { // {{{1
     }
   }
 
-  take (opts) { // {{{2
+  take (opts, streams, onmessage) { // {{{2
     console.log(this, opts)
+    let takerPK = opts.taker.keypair.publicKey()
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(
         this.makerPK,
@@ -267,6 +268,12 @@ class Offer extends Make { // {{{1
     ).submit()).then(txTake => {
       let balanceId = getClaimableBalanceId(txTake.result_xdr)
       console.log('take balanceId', balanceId)
+      streams.push({
+        close: window.StellarHorizonServer.claimableBalances().claimableBalance(balanceId).stream({
+          onerror:   e => console.error(e),
+          onmessage,
+        })
+      })
     })
 
     // }}}3

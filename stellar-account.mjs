@@ -218,7 +218,7 @@ class Make { // {{{1
 
   checkTakes (streams, onmessage) { // {{{2
     streams.push({ 
-      close: window.StellarHorizonServer.effects().forAccount(this.makerPK).stream({
+      close: window.StellarHorizonServer.effects().forAccount(this.makerPK).cursor('now').stream({
         onerror:   e => console.error(e),
         onmessage,
       })
@@ -269,7 +269,7 @@ class Offer extends Make { // {{{1
       let balanceId = getClaimableBalanceId(txTake.result_xdr)
       streams.push({
         balanceId,
-        close: window.StellarHorizonServer.effects().forAccount(takerPK).stream({
+        close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
           onerror:   e => console.error(e),
           onmessage,
         })

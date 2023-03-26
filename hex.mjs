@@ -1,11 +1,42 @@
-import { timestamp, } from './utils.mjs' // {{{1
+import { Account, } from './stellar-account.mjs' // {{{1
+
+class Make { // {{{1
+  constructor (opts) { // {{{2
+    Object.assign(this, opts)
+    this.fee = Make.fee
+
+    // Chunk description Operations into this.data 
+    if (this.validity) { // making, not retrieving an offer
+      this.data = chunkDescOps(this.description) // TODO sponsored users
+    }
+  }
+
+  checkTakes () { // {{{2
+    console.log('TODO checkTakes', this.memo)
+  }
+
+  invalidate () { // {{{2
+    console.log('TODO invalidate', this.memo)
+  }
+
+  static fee = '0.0000100' // {{{2
+
+  // }}}2
+}
+
+class Offer extends Make { // {{{1
+  constructor (opts) { // {{{2
+    super(opts)
+    this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+  }
+
+  // }}}2
+}
 
 function OfferResults (tx) { // {{{1
   this.offerResults = tx.offerResults
   return this;
 }
-
-let auxOrderbook = timestamp('Orderbook') // {{{1
 
 class Orderbook { // {{{1
   constructor (data) { // {{{2
@@ -120,6 +151,120 @@ class Orderbook { // {{{1
   // }}}2
 }
 
+class Request extends Make { // {{{1
+  constructor (opts) { // {{{2
+    super(opts)
+    this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
+  }
+
+  // }}}2
+}
+
+class User extends Account { // Stellar HEX User {{{1
+  constructor (opts) { // {{{2
+    super(opts)
+  }
+
+  add () { // trust and fund HEX assets, set user props {{{2
+    let hex = this.network.hex
+    hexAssets(hex)
+
+    let amountH = this.startingBalanceH; delete this.startingBalanceH
+    let amountCH = this.startingBalanceCH; delete this.startingBalanceCH
+    return this.trust(hex.assets[0]).trust(hex.assets[1])
+    .begin(hex.agent)
+    .pay(hex.assets[0], amountCH, hex.agent, this.keypair.publicKey())
+    .pay(hex.assets[1], amountH, hex.agent, this.keypair.publicKey())
+    .end(hex.agent)
+    .setProps();
+  }
+
+  make (or) { // Offer or Request {{{2
+    const vtid = tid => or.validityTimeoutId = tid
+    let hex = this.network.hex
+    hexAssets(hex)
+
+    delete this.transaction
+    for (let d of or.data) {
+      this.tX(or.memo).addOperation(d)
+    }
+    return this.pay(hex.assets[1], or.fee).submit().then(txResultBody => {
+      !!or.validity && or.validity != '0' &&
+        vtid(setTimeout(_ => or.invalidate(), or.validity * 1000))
+    })
+  }
+
+  remove (mergeTo) { // {{{2
+    let hex = window.StellarNetwork.hex
+    let amountH = this.loaded.balances.filter(b =>
+      b.asset_code == 'HEXA' && b.asset_issuer == hex.issuerHEXA
+    )[0].balance
+    let amountCH = this.loaded.balances.filter(b =>
+      b.asset_code == 'ClawableHexa' && b.asset_issuer == hex.issuerClawableHexa
+    )[0].balance
+
+    return this.pay(hex.assets[0], amountCH).trust(hex.assets[0], '0').
+      pay(hex.assets[1], amountH).trust(hex.assets[1], '0').
+      merge(mergeTo);
+  }
+
+  setProps (props = this) { // {{{2
+    for (let k of Object.getOwnPropertyNames(props)) {
+      if (typeof props[k] != 'string') {
+        continue;
+      }
+      this.put(k, props[k]).put(k)
+    }
+    return this;
+  }
+
+  // }}}2
+}
+
+function chunkDescOps (description, source = null) { // {{{1
+  // Check description.length
+  if (description.length < 1 || description.length > 2000) {
+    throw `- chunkDescOps: description.length is ${description.length}`
+  }
+
+  // Chunk description Operations into ops array
+  let i = 0
+  let ops = []
+  while (description.length > 64) {
+    let chunk = description.slice(0, 64)
+    description = description.slice(64)
+    if (source) {
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: chunk, source }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, source }))
+    } else {
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: chunk, }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, }))
+    }
+    i++
+  }
+  if (description.length > 0) {
+    if (source) {
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: description, source }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, source }))
+    } else {
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: description, }))
+      ops.push(window.StellarSdk.Operation.manageData({ name: `data${i}`, value: null, }))
+    }
+  }
+
+  return ops;
+}
+
+function description (operations) { // {{{1
+  let result = ''
+  for (let o of operations.records) {
+    if (o.type == 'manage_data' && o.value.length > 0) {
+      result += Buffer.from(o.value, 'base64').toString()
+    }
+  }
+  return result;
+}
+
 /** function dog2hexa (bigInt) // {{{1
  * Drops Of Gratitude (DOGs) are internal representation of HEXAs. 
  * 1 HEXA is 10000000 DOGs. 1 DOG is 0.0000001 HEXA.
@@ -227,7 +372,7 @@ function offerDeleted (xdr, kind = 'manageBuyOfferResult') { // {{{1
 }
 
 export { // {{{1
-  OfferResults, Orderbook, 
-  dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
+  Make, Offer, OfferResults, Orderbook, Request, User,
+  description, dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
   offerCreated, offerDeleted, 
 }

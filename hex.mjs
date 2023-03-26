@@ -232,7 +232,8 @@ class User extends Account { // Stellar HEX User {{{1
   }
 
   make (or) { // Offer or Request {{{2
-    let claimants = [ // createClaimableBalance {{{3
+    or.makerPK = this.loaded.id
+    let claimants = [
       new window.StellarSdk.Claimant(
         window.StellarNetwork.hex.agent,
         !or.validity || or.validity == '0' ? // seconds

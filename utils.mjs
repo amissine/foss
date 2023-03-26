@@ -202,6 +202,13 @@ async function doGET ( // {{{1
   return result;
 }
 
+function getClaimableBalanceId (result_xdr, index = 0) { // {{{1
+  let txResult = window.StellarSdk.xdr.TransactionResult.fromXDR(result_xdr, "base64");
+  let results = txResult.result().results();
+  let operationResult = results[index].value().createClaimableBalanceResult();
+  return operationResult.balanceId().toXDR("hex");
+}
+
 function pGET ( // {{{1
   path = '', 
   parms = '', 
@@ -234,6 +241,17 @@ function pGET ( // {{{1
       }
       console.error('-', response.status, text)
     });
+}
+
+function parseHEXA (desc) { // {{{1
+  let index = desc ? desc.indexOf('HEXA ') : -1
+  if (index < 0) {
+    return null;
+  }
+  let words = desc.slice(index).split(' ')
+  return words[1].endsWith('.') || words[1].endsWith(',') ? 
+    words[1].slice(0, words[1].length - 1) 
+  : words[1];
 }
 
 function retrieveItem (itemName) { // {{{1
@@ -300,6 +318,7 @@ function utf8_to_b64( str ) { // {{{1
 }
 
 export { // {{{1
-  CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, pGET, 
+  CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, getClaimableBalanceId,
+  pGET, parseHEXA,
   retrieveItem, serviceRequest, storeItem, timestamp, utf8_to_b64,
 }

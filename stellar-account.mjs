@@ -272,7 +272,8 @@ class Offer extends Make { // {{{1
         close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
           onerror:   e => console.error(e),
           onmessage,
-        })
+        }),
+        txId: txTake.id
       })
     })
 

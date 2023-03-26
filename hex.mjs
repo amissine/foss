@@ -3,18 +3,24 @@ import { Account, } from './stellar-account.mjs' // {{{1
 class Make { // {{{1
   constructor (opts) { // {{{2
     Object.assign(this, opts)
-    this.fee = Make.fee
+    this.amount ??= parseHEXA(this.description) // === ClawableHEXA ==
 
     // Chunk description Operations into this.data 
     if (this.validity) { // making, not retrieving an offer
-      this.data = chunkDescOps(this.description) // TODO sponsored users
+      this.fee = Make.fee                       // === HEXA ==========
+      this.data = chunkDescOps(this.description)
     }
   }
 
-  checkTakes () { // {{{2
-    console.log('TODO checkTakes', this.memo)
+  checkTakes (streams, onmessage) { // {{{2
+    streams.push({ 
+      close: window.StellarHorizonServer.effects().forAccount(this.makerPK).cursor('now').stream({
+        onerror:   e => console.error(e),
+        onmessage,
+      })
+    })
   }
-
+  
   invalidate () { // {{{2
     console.log('TODO invalidate', this.memo)
   }
@@ -27,7 +33,47 @@ class Make { // {{{1
 class Offer extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+    if (this.validity) {
+      this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+    }
+  }
+
+  take (opts, streams, onmessage) { // {{{2
+    //console.log(this, opts)
+    let takerPK = opts.taker.keypair.publicKey()
+    let claimants = [ // createClaimableBalance {{{3
+      new window.StellarSdk.Claimant(
+        this.makerPK,
+        !opts.validity || opts.validity == '0' ? // seconds
+          window.StellarSdk.Claimant.predicateUnconditional()
+        : window.StellarSdk.Claimant.predicateBeforeRelativeTime(opts.validity)
+      ),
+      new window.StellarSdk.Claimant( // taker can reclaim anytime
+        opts.taker.keypair.publicKey(),
+        window.StellarSdk.Claimant.predicateUnconditional()
+      )
+    ]
+    let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
+      asset: window.StellarNetwork.hex.assets[0], 
+      amount: opts.amount ?? this.amount,
+    })
+
+    // Submit the tx {{{3
+    new User(opts.taker).load().then(taker => taker.cb(
+      ccb, window.StellarSdk.Memo.hash(this.txId)
+    ).submit()).then(txTake => {
+      let balanceId = getClaimableBalanceId(txTake.result_xdr)
+      streams.push({
+        balanceId,
+        close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
+          onerror:   e => console.error(e),
+          onmessage,
+        }),
+        txId: txTake.id
+      })
+    })
+
+    // }}}3
   }
 
   // }}}2

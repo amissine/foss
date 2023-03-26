@@ -245,8 +245,8 @@ class User extends Account { // Stellar HEX User {{{1
       )
     ]
     let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
-      asset: window.StellarNetwork.hex.assets[0], 
-      amount: opts.amount ?? this.amount,
+      asset: window.StellarNetwork.hex.assets[1], 
+      amount: Make.fee,
     })
 
     delete this.transaction

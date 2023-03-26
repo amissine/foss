@@ -232,18 +232,28 @@ class User extends Account { // Stellar HEX User {{{1
   }
 
   make (or) { // Offer or Request {{{2
-    const vtid = tid => or.validityTimeoutId = tid
-    let hex = this.network.hex
-    hexAssets(hex)
+    let claimants = [ // createClaimableBalance {{{3
+      new window.StellarSdk.Claimant(
+        window.StellarNetwork.hex.agent,
+        !or.validity || or.validity == '0' ? // seconds
+          window.StellarSdk.Claimant.predicateUnconditional()
+        : window.StellarSdk.Claimant.predicateBeforeRelativeTime(or.validity)
+      ),
+      new window.StellarSdk.Claimant( // maker can reclaim anytime
+        this.loaded.id,
+        window.StellarSdk.Claimant.predicateUnconditional()
+      )
+    ]
+    let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
+      asset: window.StellarNetwork.hex.assets[0], 
+      amount: opts.amount ?? this.amount,
+    })
 
     delete this.transaction
     for (let d of or.data) {
       this.tX(or.memo).addOperation(d)
     }
-    return this.pay(hex.assets[1], or.fee).submit().then(txResultBody => {
-      !!or.validity && or.validity != '0' &&
-        vtid(setTimeout(_ => or.invalidate(), or.validity * 1000))
-    })
+    return this.cb(ccb).submit();
   }
 
   remove (mergeTo) { // {{{2

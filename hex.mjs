@@ -249,12 +249,8 @@ class User extends Account { // Stellar HEX User {{{1
       asset: window.StellarNetwork.hex.assets[1], 
       amount: Make.fee,
     })
-
     delete this.transaction
-    for (let d of or.data) {
-      this.tX(or.memo).addOperation(d)
-    }
-    return this.cb(ccb).submit();
+    return this.cb(ccb, or.memo, or.data).submit();
   }
 
   remove (mergeTo) { // {{{2

@@ -1,4 +1,5 @@
 import { Account, } from './stellar-account.mjs' // {{{1
+import { getClaimableBalanceId, } from './utils.mjs'
 
 class Make { // {{{1
   constructor (opts) { // {{{2
@@ -13,6 +14,7 @@ class Make { // {{{1
   }
 
   checkTakes (streams, onmessage) { // {{{2
+    console.log('checkTakes this', this)
     streams.push({ 
       close: window.StellarHorizonServer.effects().forAccount(this.makerPK).cursor('now').stream({
         onerror:   e => console.error(e),
@@ -201,6 +203,10 @@ class Request extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
     this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
+  }
+
+  take (opts, streams, onmessage) { // {{{2
+    console.log(this, opts)
   }
 
   // }}}2

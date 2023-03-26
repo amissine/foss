@@ -243,17 +243,6 @@ function pGET ( // {{{1
     });
 }
 
-function parseHEXA (desc) { // {{{1
-  let index = desc ? desc.indexOf('HEXA ') : -1
-  if (index < 0) {
-    return null;
-  }
-  let words = desc.slice(index).split(' ')
-  return words[1].endsWith('.') || words[1].endsWith(',') ? 
-    words[1].slice(0, words[1].length - 1) 
-  : words[1];
-}
-
 function retrieveItem (itemName) { // {{{1
   if (!storageAvailable('localStorage')) {
     throw 'localStorage NOT available'
@@ -319,6 +308,6 @@ function utf8_to_b64( str ) { // {{{1
 
 export { // {{{1
   CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, getClaimableBalanceId,
-  pGET, parseHEXA,
+  pGET, 
   retrieveItem, serviceRequest, storeItem, timestamp, utf8_to_b64,
 }

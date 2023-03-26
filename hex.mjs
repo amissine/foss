@@ -417,8 +417,19 @@ function offerDeleted (xdr, kind = 'manageBuyOfferResult') { // {{{1
   };
 }
 
+function parseHEXA (desc) { // {{{1
+  let index = desc ? desc.indexOf('HEXA ') : -1
+  if (index < 0) {
+    return null;
+  }
+  let words = desc.slice(index).split(' ')
+  return words[1].endsWith('.') || words[1].endsWith(',') ? 
+    words[1].slice(0, words[1].length - 1) 
+  : words[1];
+}
+
 export { // {{{1
   Make, Offer, OfferResults, Orderbook, Request, User,
   description, dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
-  offerCreated, offerDeleted, 
+  offerCreated, offerDeleted, parseHEXA,
 }

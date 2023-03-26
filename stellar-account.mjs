@@ -243,7 +243,7 @@ class Offer extends Make { // {{{1
   }
 
   take (opts, streams, onmessage) { // {{{2
-    console.log(this, opts)
+    //console.log(this, opts)
     let takerPK = opts.taker.keypair.publicKey()
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(

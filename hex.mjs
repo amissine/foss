@@ -52,14 +52,16 @@ class Make { // {{{1
       ccb, window.StellarSdk.Memo.hash(this.txId)
     ).submit()).then(txTake => {
       let balanceId = getClaimableBalanceId(txTake.result_xdr)
-      streams.push({
+      streams.find(s => s.takerPK == taker.loaded.id) || streams.push({
         balanceId,
         close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
           onerror:   e => console.error(e),
           onmessage,
         }),
+        takerPK: taker.loaded.id,
         txId: txTake.id
       })
+      return balanceId;
     })
 
     // }}}3

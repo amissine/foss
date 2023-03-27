@@ -48,7 +48,7 @@ class Make { // {{{1
     })
 
     // Submit the tx {{{3
-    new User(opts.taker).load().then(taker => taker.cb(
+    return new User(opts.taker).load().then(taker => taker.cb(
       ccb, window.StellarSdk.Memo.hash(this.txId)
     ).submit()).then(txTake => {
       let balanceId = getClaimableBalanceId(txTake.result_xdr)

@@ -27,21 +27,8 @@ class Make { // {{{1
     console.log('TODO invalidate', this.memo)
   }
 
-  static fee = '0.0000100' // {{{2
-
-  // }}}2
-}
-
-class Offer extends Make { // {{{1
-  constructor (opts) { // {{{2
-    super(opts)
-    if (this.validity) {
-      this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
-    }
-  }
-
   take (opts, streams, onmessage) { // {{{2
-    //console.log(this, opts)
+    console.log(this, opts)
     let takerPK = opts.taker.keypair.publicKey()
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(
@@ -57,7 +44,7 @@ class Offer extends Make { // {{{1
     ]
     let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
       asset: window.StellarNetwork.hex.assets[0], 
-      amount: opts.amount ?? this.amount,
+      amount: dog2hexa(hexa2dog(opts.amount ?? this.amount) + 100n),
     })
 
     // Submit the tx {{{3
@@ -77,6 +64,19 @@ class Offer extends Make { // {{{1
 
     // }}}3
   }
+  static fee = '0.0000100' // {{{2
+
+  // }}}2
+}
+
+class Offer extends Make { // {{{1
+  constructor (opts) { // {{{2
+    super(opts)
+    if (this.validity) {
+      this.memo = window.StellarSdk.Memo.text(`Offer ${this.validity}`)
+    }
+  }
+
 
   // }}}2
 }
@@ -202,11 +202,9 @@ class Orderbook { // {{{1
 class Request extends Make { // {{{1
   constructor (opts) { // {{{2
     super(opts)
-    this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
-  }
-
-  take (opts, streams, onmessage) { // {{{2
-    console.log(this, opts)
+    if (this.validity) {
+      this.memo = window.StellarSdk.Memo.text(`Request ${this.validity}`)
+    }
   }
 
   // }}}2

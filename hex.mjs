@@ -59,7 +59,7 @@ class Make { // {{{1
             txId: txTake.id
           })
           let balanceId = getClaimableBalanceId(txTake.result_xdr)
-          console.log('balanceId' balanceId)
+          console.log('balanceId', balanceId)
           return balanceId;
         })
     }).then(balanceId => console.log(balanceId));

@@ -58,8 +58,9 @@ class Make { // {{{1
             takerPK: taker.loaded.id,
             txId: txTake.id
           })
-          console.log(txTake)
-          return getClaimableBalanceId(txTake.result_xdr);
+          let balanceId = getClaimableBalanceId(txTake.result_xdr)
+          console.log('balanceId' balanceId)
+          return balanceId;
         })
     }).then(balanceId => console.log(balanceId));
 

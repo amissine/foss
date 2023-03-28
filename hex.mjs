@@ -27,7 +27,6 @@ class Make { // {{{1
   }
 
   take (opts, streams, onmessage) { // {{{2
-    console.log(this, opts)
     let takerPK = opts.taker.keypair.publicKey(), taker
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(

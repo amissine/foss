@@ -71,9 +71,6 @@ class Account { // {{{1
   }
 
   async load () { // {{{2
-    if (this.loaded) {
-      return this;
-    }
     this.loaded = await this.server.loadAccount(this.keypair.publicKey())
     //.catch(e => { throw e; }) // TODO something more meaningful
 

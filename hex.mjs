@@ -28,7 +28,7 @@ class Make { // {{{1
 
   take (opts, streams, onmessage) { // {{{2
     console.log(this, opts)
-    let takerPK = opts.taker.keypair.publicKey()
+    let takerPK = opts.taker.keypair.publicKey(), taker
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(
         this.makerPK,
@@ -47,22 +47,19 @@ class Make { // {{{1
     })
 
     // Submit the tx {{{3
-    return new User(opts.taker).load().then(taker => {
-      taker.cb(ccb, window.StellarSdk.Memo.hash(this.txId)).submit().
-        then(txTake => {
-          streams.find(s => s.takerPK == taker.loaded.id) || streams.push({
-            close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
-              onerror:   e => console.error(e),
-              onmessage,
-            }),
-            takerPK: taker.loaded.id,
-            txId: txTake.id
-          })
-          let balanceId = getClaimableBalanceId(txTake.result_xdr)
-          console.log('balanceId', balanceId)
-          return balanceId;
-        })
-    }).then(balanceId => console.log(balanceId));
+    return new User(opts.taker).load().then(user => {
+      taker = user
+      return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId)).submit();
+    }).then(txTake => {
+      streams.find(s => s.takerPK == taker.loaded.id) || streams.push({
+        close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
+          onerror:   e => console.error(e),
+          onmessage,
+        }),
+        takerPK,
+      })
+      return getClaimableBalanceId(txTake.result_xdr);
+    });
 
     // }}}3
   }

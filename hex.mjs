@@ -14,7 +14,6 @@ class Make { // {{{1
   }
 
   checkTakes (streams, onmessage) { // {{{2
-    console.log('checkTakes this', this)
     streams.push({ 
       close: window.StellarHorizonServer.effects().forAccount(this.makerPK).cursor('now').stream({
         onerror:   e => console.error(e),

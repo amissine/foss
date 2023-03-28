@@ -50,9 +50,7 @@ class Make { // {{{1
     return new User(opts.taker).load().then(taker => {
       taker.cb(ccb, window.StellarSdk.Memo.hash(this.txId)).submit().
         then(txTake => {
-          let balanceId = getClaimableBalanceId(txTake.result_xdr)
           streams.find(s => s.takerPK == taker.loaded.id) || streams.push({
-            balanceId,
             close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
               onerror:   e => console.error(e),
               onmessage,
@@ -60,9 +58,9 @@ class Make { // {{{1
             takerPK: taker.loaded.id,
             txId: txTake.id
           })
-          return balanceId;
+          return txTake.result_xdr;
         })
-    });
+    }).then(txResultXDR => getClaimableBalanceId(txResultXDR));
 
     // }}}3
   }

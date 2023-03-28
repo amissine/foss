@@ -60,7 +60,7 @@ class Make { // {{{1
           })
           return getClaimableBalanceId(txTake.result_xdr);
         })
-    }).then(balanceId => balanceId);
+    }).then(balanceId => console.log(balanceId));
 
     // }}}3
   }

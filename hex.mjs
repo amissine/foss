@@ -56,6 +56,7 @@ class Make { // {{{1
           onerror:   e => console.error(e),
           onmessage,
         }),
+        takerPK,
       })
       return getClaimableBalanceId(txTake.result_xdr);
     });

@@ -58,9 +58,9 @@ class Make { // {{{1
             takerPK: taker.loaded.id,
             txId: txTake.id
           })
-          return txTake.result_xdr;
+          return getClaimableBalanceId(txTake.result_xdr);
         })
-    }).then(txResultXDR => getClaimableBalanceId(txResultXDR));
+    }).then(balanceId => balanceId);
 
     // }}}3
   }

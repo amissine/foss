@@ -205,6 +205,11 @@ class Request extends Make { // {{{1
     }
   }
 
+  take (opts, streams, onmessage) { // {{{2
+    opts.amount = '0'
+    return super.take(opts, streams, onmessage);
+  }
+
   // }}}2
 }
 

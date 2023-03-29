@@ -280,7 +280,7 @@ class User extends Account { // Stellar HEX User {{{1
   }
 
   static getProps (pk) { // {{{2
-    window.StellarHorizonServer.effects().forAccount(pk).call().
+    window.StellarHorizonServer.effects().forAccount(pk).order('desc').call().
       then(r => console.log('getProps', r))
   }
 

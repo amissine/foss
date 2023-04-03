@@ -41,7 +41,7 @@ class Make { // {{{1
       taker = user
       return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId)).submit();
     }).then(txTake => {
-      streams.find(s => s.takerPK == taker.loaded.id) || Make.stream(
+      streams.find(s => s.pk == taker.loaded.id) || Make.stream(
         streams, takerPK, onmessage, console.error
       )
       return getClaimableBalanceId(txTake.result_xdr);

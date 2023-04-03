@@ -13,15 +13,6 @@ class Make { // {{{1
     }
   }
 
-  checkTakes (streams, onmessage) { // {{{2
-    streams.push({ 
-      close: window.StellarHorizonServer.effects().forAccount(this.makerPK).cursor('now').stream({
-        onerror:   e => console.error(e),
-        onmessage,
-      })
-    })
-  }
-  
   invalidate () { // {{{2
     console.log('TODO invalidate', this.memo)
   }
@@ -50,19 +41,23 @@ class Make { // {{{1
       taker = user
       return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId)).submit();
     }).then(txTake => {
-      streams.find(s => s.takerPK == taker.loaded.id) || streams.push({
-        close: window.StellarHorizonServer.effects().forAccount(takerPK).cursor('now').stream({
-          onerror:   e => console.error(e),
-          onmessage,
-        }),
-        takerPK,
-      })
+      streams.find(s => s.takerPK == taker.loaded.id) || Make.stream(
+        streams, takerPK, onmessage, console.error
+      )
       return getClaimableBalanceId(txTake.result_xdr);
     });
 
     // }}}3
   }
   static fee = '0.0000100' // {{{2
+
+  static stream (streams, pk, onmessage, onerror) { // {{{2
+    streams.push({
+      close: window.StellarHorizonServer.effects().forAccount(pk).cursor('now').
+        stream({ onerror, onmessage, }),
+      pk,
+    })
+  }
 
   // }}}2
 }

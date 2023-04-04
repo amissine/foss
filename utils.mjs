@@ -207,7 +207,7 @@ function getClaimableBalanceId (result_xdr, index = 0) { // {{{1
   let results = txResult.result().results();
   let operationResult = results[index].value().createClaimableBalanceResult();
   let balanceId = operationResult.balanceId().toXDR("hex");
-  console.log('getClaimableBalanceId balanceId', balanceId)
+  //console.log('getClaimableBalanceId balanceId', balanceId)
   return balanceId;
 }
 

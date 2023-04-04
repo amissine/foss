@@ -264,6 +264,27 @@ class User extends Account { // Stellar HEX User {{{1
       merge(mergeTo);
   }
 
+  repay (txId) { // {{{2
+    //or.makerPK = this.loaded.id
+    let claimants = [
+      new window.StellarSdk.Claimant(
+        window.StellarNetwork.hex.issuerClawableHexa,
+        window.StellarSdk.Claimant.predicateUnconditional()
+      ),
+      new window.StellarSdk.Claimant(
+        this.loaded.id,
+        window.StellarSdk.Claimant.predicateUnconditional()
+      )
+    ]
+    let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
+      asset: window.StellarNetwork.hex.assets[1], 
+      amount: Make.fee,
+    })
+    delete this.transaction
+    return this.cb(ccb, window.StellarSdk.Memo.hash(txId)).submit().
+      then(txResult => getClaimableBalanceId(txResult.result_xdr));
+  }
+
   setProps (props = this) { // {{{2
     for (let k of Object.getOwnPropertyNames(props)) {
       if (typeof props[k] != 'string') {

@@ -206,7 +206,9 @@ function getClaimableBalanceId (result_xdr, index = 0) { // {{{1
   let txResult = window.StellarSdk.xdr.TransactionResult.fromXDR(result_xdr, "base64");
   let results = txResult.result().results();
   let operationResult = results[index].value().createClaimableBalanceResult();
-  return operationResult.balanceId().toXDR("hex");
+  let balanceId = operationResult.balanceId().toXDR("hex");
+  console.log('getClaimableBalanceId balanceId', balanceId)
+  return balanceId;
 }
 
 function pGET ( // {{{1

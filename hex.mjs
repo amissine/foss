@@ -40,11 +40,14 @@ class Make { // {{{1
     return new User(opts.taker).load().then(user => {
       taker = user
       return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId)).submit();
-    }).then(txTake => {
+    }).then(txR => {
       streams.find(s => s.pk == taker.loaded.id) || Make.stream(
         streams, takerPK, onmessage, console.error
       )
-      return getClaimableBalanceId(txTake.result_xdr);
+      return {
+        balanceId: getClaimableBalanceId(txR.result_xdr),
+        txId: txR.id,
+      };
     });
 
     // }}}3

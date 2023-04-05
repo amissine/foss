@@ -246,8 +246,12 @@ class User extends Account { // Stellar HEX User {{{1
       amount: Make.fee,
     })
     delete this.transaction
-    return this.cb(ccb, or.memo, or.data).submit().
-      then(txMakeResult => getClaimableBalanceId(txMakeResult.result_xdr));
+    return this.cb(ccb, or.memo, or.data).submit().then(txR => {
+      return {
+        balanceId: getClaimableBalanceId(txR.result_xdr),
+        txId: txR.id,
+      }
+    });
   }
 
   remove (mergeTo) { // {{{2

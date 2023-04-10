@@ -18,6 +18,7 @@ class Make { // {{{1
   }
 
   take (opts, streams, onmessage) { // {{{2
+    let amount = dog2hexa(hexa2dog(opts.amount ?? this.amount) + 100n),
     let takerPK = opts.taker.keypair.publicKey(), taker
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(
@@ -32,8 +33,7 @@ class Make { // {{{1
       )
     ]
     let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
-      asset: window.StellarNetwork.hex.assets[0], 
-      amount: dog2hexa(hexa2dog(opts.amount ?? this.amount) + 100n),
+      asset: window.StellarNetwork.hex.assets[0], amount,
     })
 
     // Submit the tx {{{3
@@ -45,6 +45,7 @@ class Make { // {{{1
         streams, takerPK, onmessage, console.error
       )
       return {
+        amount,
         balanceId: getClaimableBalanceId(txR.result_xdr),
         txId: txR.id,
       };

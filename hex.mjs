@@ -18,7 +18,7 @@ class Make { // {{{1
   }
 
   take (opts, streams, onmessage) { // {{{2
-    let amount = dog2hexa(hexa2dog(opts.amount ?? this.amount) + 100n)
+    let amount = dog2hexa(hexa2dog(opts.amount ?? this.amount) + hexa2dog(Make.fee))
     let takerPK = opts.taker.keypair.publicKey(), taker
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(

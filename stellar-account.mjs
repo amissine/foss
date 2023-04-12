@@ -50,6 +50,11 @@ class Account { // {{{1
     return this;
   }
 
+  clawback (opts, memo = null) { // {{{2
+    this.tX(memo).addOperation(this.sdk.Operation.clawback(opts))
+    return this;
+  }
+
   create (destination, startingBalance) { // {{{2
     this.tX().addOperation(this.sdk.Operation.createAccount({
       destination, startingBalance

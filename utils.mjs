@@ -304,12 +304,17 @@ function timestamp (label = 'default') {
   return q - p;
 }
 
+function txRef (t) { // {{{1
+  return new window.StellarSdk.Memo(t.memo_type, // must be 'hash'
+    Buffer.from(t.memo, 'base64')
+  ).value.toString('hex');
+}
+
 function utf8_to_b64( str ) { // {{{1
   return btoa(unescape(encodeURIComponent( str )));
 }
 
 export { // {{{1
   CFW_URL_DEV, Semaphore, b64_to_utf8, delay, doGET, getClaimableBalanceId,
-  pGET, 
-  retrieveItem, serviceRequest, storeItem, timestamp, utf8_to_b64,
+  pGET, retrieveItem, serviceRequest, storeItem, timestamp, txRef, utf8_to_b64,
 }

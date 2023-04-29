@@ -276,8 +276,9 @@ class User extends Account { // Stellar HEX User {{{1
       amount: Make.fee,
     })
     delete this.transaction
-    return this.cb(ccb, or.memo, or.data).submit().then(txR => {
-      return {
+    return this.cb(ccb, or.memo, or.data).submit().then(txR => 
+      or.txId = txR.id
+      return { // TODO return only balance Id - breaks PoC, Day1
         balanceId: getClaimableBalanceId(txR.result_xdr),
         txId: txR.id,
       }

@@ -501,6 +501,7 @@ function parseHEXA (desc) { // {{{1
 
 export { // {{{1
   Make, Offer, OfferResults, Orderbook, Request, User,
+  chunkDescOps,
   description, dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
   offerCreated, offerDeleted, parseHEXA,
 }

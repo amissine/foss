@@ -39,7 +39,7 @@ class Make { // {{{1
     // Submit the tx {{{3
     return new User(opts.taker).load().then(user => {
       taker = user
-      return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId)).submit();
+      return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId), opts.data).submit();
     }).then(txR => {
       streams.find(s => s.pk == taker.loaded.id) || Make.stream(
         streams, takerPK, onmessage, console.error

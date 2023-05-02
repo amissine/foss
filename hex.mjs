@@ -8,7 +8,7 @@ class Make { // {{{1
 
     // Chunk description Operations into this.data 
     if (this.validity) { // making, not retrieving an offer
-      this.fee = Make.fee                       // === HEXA ==========
+      this.fee = Make.fee
       this.data = chunkDescOps(this.description)
     }
   }

@@ -18,6 +18,10 @@ class Make { // {{{1
   }
 
   take (opts, streams, onmessage) { // {{{2
+    if (opts.description) {
+      opts.amount = parseHEXA(opts.description)
+      opts.data = chunkDescOps(opts.description)
+    }
     let amount = dog2hexa(hexa2dog(opts.amount ?? this.amount) + hexa2dog(Make.fee))
     let takerPK = opts.taker.keypair.publicKey(), taker
     let claimants = [ // createClaimableBalance {{{3
@@ -501,7 +505,6 @@ function parseHEXA (desc) { // {{{1
 
 export { // {{{1
   Make, Offer, OfferResults, Orderbook, Request, User,
-  chunkDescOps,
   description, dog2hexa, hexAssets, hexStartingBalance, hexaValue, hexa2dog, 
   offerCreated, offerDeleted, parseHEXA,
 }

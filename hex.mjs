@@ -6,10 +6,11 @@ class Make { // {{{1
     Object.assign(this, opts)
     this.amount ??= parseHEXA(this.description) // === ClawableHEXA ==
 
-    // Chunk description Operations into this.data 
-    if (this.validity) { // making, not retrieving an offer
+    if (this.validity) { // making, not retrieving a make
       this.fee = Make.fee
       this.data = chunkDescOps(this.description)
+    } else {
+      this.isOffer = this.memo.startsWith('Offer')
     }
   }
 
@@ -19,10 +20,10 @@ class Make { // {{{1
 
   take (opts, streams, onmessage) { // {{{2
     if (opts.description) {
-      opts.amount = parseHEXA(opts.description)
       opts.data = chunkDescOps(opts.description)
     }
-    let amount = dog2hexa(hexa2dog(opts.amount ?? this.amount) + hexa2dog(Make.fee))
+    let amount = this.isOffer ? Make.fee 
+      : dog2hexa(hexa2dog(this.amount) + hexa2dog(Make.fee))
     let takerPK = opts.taker.keypair.publicKey(), taker
     let claimants = [ // createClaimableBalance {{{3
       new window.StellarSdk.Claimant(
@@ -43,7 +44,8 @@ class Make { // {{{1
     // Submit the tx {{{3
     return new User(opts.taker).load().then(user => {
       taker = user
-      return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId), opts.data).submit();
+      return user.cb(ccb, window.StellarSdk.Memo.hash(this.txId), opts.data).
+        submit();
     }).then(txR => {
       streams.find(s => s.pk == taker.loaded.id) || Make.stream(
         streams, takerPK, onmessage, console.error

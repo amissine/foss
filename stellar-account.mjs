@@ -69,6 +69,11 @@ class Account { // {{{1
     return this;
   }
 
+  fill () { // {{{2
+    return this.server.loadAccount(this.keypair.publicKey()).
+      catch(console.error);
+  }
+
   fromXDR (xdr) { // {{{2
     return this.sdk.TransactionBuilder.fromXDR(
       xdr, this.sdk.Networks[this.network.name]

@@ -71,7 +71,10 @@ class Account { // {{{1
 
   fill () { // {{{2
     return this.server.loadAccount(this.keypair.publicKey()).
-      catch(console.error);
+      then(loaded => {
+        this.loaded = loaded
+        return this;
+      }).catch(console.error);
   }
 
   fromXDR (xdr) { // {{{2

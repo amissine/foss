@@ -273,6 +273,7 @@ class User extends Account { // Stellar HEX User {{{1
     return this.cb(ccb, window.StellarSdk.Memo.hash(take.txId)).pay(this.network.hex.assets[0], amount, null, take.takerPK).submit().then(txR => {
       return {
         amount,
+        takeTxId: take.txId,
         txId: txR.id,
       };
     });

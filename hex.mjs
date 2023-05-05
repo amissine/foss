@@ -263,6 +263,21 @@ class User extends Account { // Stellar HEX User {{{1
     });
   }
 
+  grant (take, make) { // {{{2
+    let ccb = window.StellarSdk.Operation.claimClaimableBalance({
+      balanceId: take.balanceId,
+    })
+    let amount = make.isOffer ? Make.fee
+    : take.description ? amount2pay(parseHEXA(take.description))
+    : amount2pay(make.amount)
+    return this.cb(ccb, window.StellarSdk.Memo.hash(takerTxId)).pay(user.network.hex.assets[0], amount, null, take.takerPK).submit().then(txR => {
+      return {
+        amount,
+        txId: txR.id,
+      };
+    });
+  }
+
   make (or) { // Offer or Request {{{2
     or.makerPK = this.loaded.id
     let claimants = [
@@ -284,8 +299,6 @@ class User extends Account { // Stellar HEX User {{{1
     delete this.transaction
     return this.cb(ccb, or.memo, or.data).submit().then(txR => {
       or.txId = txR.id
-      this.makes ??= []
-      this.makes.push(or)
       return { // TODO return only balance Id - breaks PoC, Day1
         balanceId: getClaimableBalanceId(txR.result_xdr),
         txId: txR.id,
@@ -362,11 +375,11 @@ class User extends Account { // Stellar HEX User {{{1
     return this.cb(ccb, window.StellarSdk.Memo.hash(or.txId), opts.data).
       submit().then(txR => {
         let take = {
-          amount, or,
+          amount, 
+          description: opts.description,
+          or,
           takerPK: this.loaded.id, txId: txR.id,
         }
-        this.takes ??= []
-        this.takes.push(take)
         return {
           balanceId: getClaimableBalanceId(txR.result_xdr),
           take,
@@ -380,6 +393,10 @@ class User extends Account { // Stellar HEX User {{{1
   }
 
   // }}}2
+}
+
+function amount2pay (amount) { // {{{1
+  return dog2hexa(hexa2dog(amount) + hexa2dog(Make.fee));
 }
 
 function chunkDescOps (description, source = null) { // {{{1

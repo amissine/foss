@@ -338,6 +338,12 @@ class User extends Account { // Stellar HEX User {{{1
     return this;
   }
 
+  take (or, opts) { // {{{2
+    if (opts.description) {
+      opts.data = chunkDescOps(opts.description)
+    }
+  }
+
   static getProps (pk) { // {{{2
     window.StellarHorizonServer.effects().forAccount(pk).order('desc').call().
       then(r => console.log('getProps', r))

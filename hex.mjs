@@ -267,7 +267,7 @@ class User extends Account { // Stellar HEX User {{{1
     let ccb = window.StellarSdk.Operation.claimClaimableBalance({
       balanceId: take.balanceId,
     })
-    let amount = make.isOffer ? Make.fee
+    let amount = make.memo.value.toString().startsWith('Offer') ? Make.fee
     : take.description ? amount2pay(parseHEXA(take.description))
     : amount2pay(make.amount)
     return this.cb(ccb, window.StellarSdk.Memo.hash(take.txId)).pay(this.network.hex.assets[0], amount, null, take.takerPK).submit().then(txR => {

@@ -342,6 +342,36 @@ class User extends Account { // Stellar HEX User {{{1
     if (opts.description) {
       opts.data = chunkDescOps(opts.description)
     }
+    let amount = or.isOffer ? dog2hexa(hexa2dog(or.amount) + hexa2dog(Make.fee))
+    : Make.fee
+    let claimants = [
+      new window.StellarSdk.Claimant(
+        or.makerPK,
+        !opts.validity || opts.validity == '0' ? // seconds
+          window.StellarSdk.Claimant.predicateUnconditional()
+        : window.StellarSdk.Claimant.predicateBeforeRelativeTime(opts.validity)
+      ),
+      new window.StellarSdk.Claimant( // taker can reclaim anytime
+        this.loaded.id,
+        window.StellarSdk.Claimant.predicateUnconditional()
+      )
+    ]
+    let ccb = window.StellarSdk.Operation.createClaimableBalance({ claimants,
+      asset: window.StellarNetwork.hex.assets[0], amount,
+    })
+    return this.cb(ccb, window.StellarSdk.Memo.hash(or.txId), opts.data).
+      submit().then(txR => {
+        let take = {
+          amount, or,
+          takerPK: this.loaded.id, txId: txR.id,
+        }
+        this.takes ??= []
+        this.takes.push(take)
+        return {
+          balanceId: getClaimableBalanceId(txR.result_xdr),
+          take,
+        };
+      });
   }
 
   static getProps (pk) { // {{{2

@@ -270,7 +270,7 @@ class User extends Account { // Stellar HEX User {{{1
     let amount = make.isOffer ? Make.fee
     : take.description ? amount2pay(parseHEXA(take.description))
     : amount2pay(make.amount)
-    return this.cb(ccb, window.StellarSdk.Memo.hash(take.txId)).pay(user.network.hex.assets[0], amount, null, take.takerPK).submit().then(txR => {
+    return this.cb(ccb, window.StellarSdk.Memo.hash(take.txId)).pay(this.network.hex.assets[0], amount, null, take.takerPK).submit().then(txR => {
       return {
         amount,
         txId: txR.id,

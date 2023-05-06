@@ -237,7 +237,8 @@ class User extends Account { // Stellar HEX User {{{1
     .setProps();
   }
 
-  convertClawableHexaToHEXA (opts) { // {{{2
+  convertClawableHexaToHEXA (opts) { // opts: amount, memo{{{2
+    opts.memo ??= window.StellarSdk.Memo.hash(opts.takeTxId)
     let claimants = [
       new window.StellarSdk.Claimant(
         window.StellarNetwork.hex.agent,
@@ -258,6 +259,7 @@ class User extends Account { // Stellar HEX User {{{1
     return this.cb(ccb, opts.memo).submit().then(txR => {
       return {
         balanceId: getClaimableBalanceId(txR.result_xdr),
+        pk: this.loaded.id,
         txId: txR.id,
       }
     });

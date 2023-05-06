@@ -237,8 +237,8 @@ class User extends Account { // Stellar HEX User {{{1
     .setProps();
   }
 
-  convertClawableHexaToHEXA (opts) { // opts: amount, memo{{{2
-    opts.memo ??= window.StellarSdk.Memo.hash(opts.takeTxId)
+  convertClawableHexaToHEXA (opts) { // opts: amount, memo | grantTxId {{{2
+    opts.memo ??= window.StellarSdk.Memo.hash(opts.grantTxId)
     let claimants = [
       new window.StellarSdk.Claimant(
         window.StellarNetwork.hex.agent,

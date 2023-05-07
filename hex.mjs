@@ -324,7 +324,6 @@ class User extends Account { // Stellar HEX User {{{1
   }
 
   repay (txId) { // {{{2
-    //or.makerPK = this.loaded.id
     let claimants = [
       new window.StellarSdk.Claimant(
         window.StellarNetwork.hex.issuerClawableHexa,
@@ -340,8 +339,10 @@ class User extends Account { // Stellar HEX User {{{1
       amount: Make.fee,
     })
     delete this.transaction
-    return this.cb(ccb, window.StellarSdk.Memo.hash(txId)).submit().
-      then(txResult => getClaimableBalanceId(txResult.result_xdr));
+    return this.cb(ccb, window.StellarSdk.Memo.hash(txId)).submit().then(txR => ({
+      balanceId: getClaimableBalanceId(txR.result_xdr),
+      txId: txR.id,
+    }));
   }
 
   setProps (props = this) { // {{{2
